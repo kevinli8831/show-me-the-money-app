@@ -1,20 +1,44 @@
-import { Stack } from "expo-router";
-import "../global.css";
+/**
+ * 根佈局組件 (Root Layout)
+ * 
+ * 這是應用的根佈局檔案，負責：
+ * 1. 設置 React Query 客戶端，用於資料獲取和快取
+ * 2. 配置 Expo Router 的 Stack 導航
+ * 3. 根據平台（Web/移動設備）顯示不同的導航欄
+ *    - Web: 顯示頂部導航欄 (TopUpBar)
+ *    - 移動設備: 不顯示頂部導航欄（使用底部導航欄）
+ */
+
 import {
   QueryClient,
   QueryClientProvider,
-} from '@tanstack/react-query'
+} from '@tanstack/react-query';
+import { Stack } from "expo-router";
+import { Platform } from "react-native";
+import "../global.css";
+import { TopUpBar } from "./components/top-up-bar";
 
 
-// Create a client
+// 建立 React Query 客戶端實例，用於管理伺服器狀態和快取
 const queryClient = new QueryClient()
 
 
 export default function RootLayout() {
-  return (
+  // 檢測當前執行平台是否為 Web
+  const isWeb = Platform.OS === 'web';
 
-          <QueryClientProvider client={queryClient}>
-            <Stack />
-          </QueryClientProvider>
-          )
+  return (
+    // 提供 React Query 上下文，使所有子組件可以使用 useQuery 等 hooks
+    <QueryClientProvider client={queryClient}>
+      <Stack 
+        screenOptions={{
+          // 僅在 Web 平台顯示頂部導航欄
+          headerShown: isWeb,
+          // 在 Web 平台使用自訂的 TopUpBar 組件作為 header
+          // 移動設備不顯示 header，因為使用底部導航欄
+          header: isWeb ? () => <TopUpBar /> : undefined,
+        }}
+      />
+    </QueryClientProvider>
+  );
 }
