@@ -1,0 +1,13 @@
+{
+  "buildCommand": "pnpm expo export --platform web",
+  "outputDirectory": "dist",
+  "devCommand": "pnpm expo start --web",
+  "cleanUrls": true,
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "destination": "/"
+    }
+  ]
+}
