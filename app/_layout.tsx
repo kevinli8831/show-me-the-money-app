@@ -14,9 +14,10 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { Stack } from "expo-router";
-import { Platform } from "react-native";
+import { useWindowDimensions } from 'react-native';
 import "../global.css";
 import { TopUpBar } from "./components/top-up-bar";
+import { breakpoints } from './constants/breakpoints';
 
 
 // 建立 React Query 客戶端實例，用於管理伺服器狀態和快取
@@ -25,7 +26,8 @@ const queryClient = new QueryClient()
 
 export default function RootLayout() {
   // 檢測當前執行平台是否為 Web
-  const isWeb = Platform.OS === 'web';
+  const { width } = useWindowDimensions();
+  const isWeb = width > breakpoints.sm;
 
   return (
     // 提供 React Query 上下文，使所有子組件可以使用 useQuery 等 hooks

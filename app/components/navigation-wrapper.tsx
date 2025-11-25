@@ -16,8 +16,9 @@
  */
 
 import React from 'react';
-import { Platform, View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import { BottomTabBar } from './bottom-tab-bar';
+import { breakpoints } from '../constants/breakpoints';
 
 interface NavigationWrapperProps {
   children: React.ReactNode;
@@ -25,7 +26,8 @@ interface NavigationWrapperProps {
 
 export function NavigationWrapper({ children }: NavigationWrapperProps) {
   // 檢測當前執行平台是否為 Web
-  const isWeb = Platform.OS === 'web';
+  const { width } = useWindowDimensions();
+  const isWeb = width > breakpoints.sm;
 
   if (isWeb) {
     // Web 平台：頂部導航欄由 Stack 的 header 處理，這裡只渲染子內容
