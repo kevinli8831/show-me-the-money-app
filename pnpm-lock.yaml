@@ -74,6 +74,9 @@ importers:
       react-native:
         specifier: 0.81.5
         version: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
+      react-native-config:
+        specifier: ^1.6.0
+        version: 1.6.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
       react-native-css:
         specifier: ^3.0.1
         version: 3.0.1(@expo/metro-config@54.0.9(expo@54.0.25))(lightningcss@1.30.2)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
@@ -3657,6 +3660,16 @@ packages:
 
   react-is@19.2.0:
     resolution: {integrity: sha512-x3Ax3kNSMIIkyVYhWPyO09bu0uttcAIoecO/um/rKGQ4EltYWVYtyiGkS/3xMynrbVQdS69Jhlv8FXUEZehlzA==}
+
+  react-native-config@1.6.0:
+    resolution: {integrity: sha512-UtiKWiLlSNgWf/9CPMkM1UoOHtnc7p9YyvUb9DozgQ41xcRhImGfh6nAtW9HhWhfsvMgTdq7l+xSMn9JPW0SLQ==}
+    peerDependencies:
+      react: '*'
+      react-native: '*'
+      react-native-windows: '>=0.61'
+    peerDependenciesMeta:
+      react-native-windows:
+        optional: true
 
   react-native-css@3.0.1:
     resolution: {integrity: sha512-sE/Qp2p+UaV9+W6T+GwsRH5sIynaTfhM2Khn+tN1q1YKYq1STVyAWyC+0i6ac4mFAO/FxQ/a03BDmrrt48qiuQ==}
@@ -8730,6 +8743,11 @@ snapshots:
   react-is@18.3.1: {}
 
   react-is@19.2.0: {}
+
+  react-native-config@1.6.0(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0):
+    dependencies:
+      react: 19.1.0
+      react-native: 0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0)
 
   react-native-css@3.0.1(@expo/metro-config@54.0.9(expo@54.0.25))(lightningcss@1.30.2)(react-native@0.81.5(@babel/core@7.28.5)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0):
     dependencies:
