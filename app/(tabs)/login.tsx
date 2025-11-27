@@ -1,294 +1,192 @@
-/**
- * 登入頁面組件 (Login Page)
- * 
- * 功能：
- * 1. 顯示登入/註冊切換按鈕
- * 2. 登入模式：顯示用戶名和密碼輸入框
- * 3. 註冊模式：顯示用戶名、密碼、郵箱和電話輸入框
- * 4. 使用 NavigationWrapper 包裹，自動顯示底部導航欄（移動設備）
- * 
- * 路由：/(tabs)/login
- */
-
-import { useState } from "react";
-import {
+  import { useMutation } from '@tanstack/react-query';
+  import {
+    Alert,
+    Image,
     Pressable,
     ScrollView,
     StyleSheet,
     Text,
-    TextInput,
     useColorScheme,
     View
-} from "react-native";
-import { NavigationWrapper } from "../components/navigation-wrapper";
+  } from 'react-native';
+  import { NavigationWrapper } from '../components/navigation-wrapper';
+  import Constants from 'expo-constants';
 
-type FormMode = 'login' | 'register';
-
-export default function Login() {
+  export default function Login() {
     const colorScheme = useColorScheme();
     const isDark = colorScheme === 'dark';
-    const [mode, setMode] = useState<FormMode>('login');
-    
-    // 表單狀態
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
-    const [phone, setPhone] = useState('');
+    const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl;
 
-    // 輸入框樣式
-    const inputStyle = [
-        styles.input,
-        {
-            backgroundColor: isDark ? '#1f2937' : '#f9fafb',
-            borderColor: isDark ? '#374151' : '#e5e7eb',
-            color: isDark ? '#f3f4f6' : '#1f2937',
-        },
-    ];
+    const mutation = useMutation({
+      mutationFn: async () => {
+        const res = await fetch(`${API_BASE_URL}/auth/google`, {
+          method: 'GET',
+          credentials: 'include',
+        });
 
-    const placeholderTextColor = isDark ? '#9ca3af' : '#6b7280';
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(text.trim() || res.statusText || 'Login failed');
+        }
+        return res.json();
+      },
+
+      onSuccess: (data) => {
+        Alert.alert('Login success', 'Welcome back!');
+        console.log('Login success:', data);
+      },
+
+      onError: (error: any) => {
+        console.error('Login error:', error);
+        Alert.alert('Login Failed', error.message || 'Please try again.');
+      },
+    });
+
+    const handleGoogleLogin = () => {
+      mutation.reset();        // 清除舊的錯誤狀態
+      mutation.mutate();       // 觸發登入
+    };
 
     return (
-        <NavigationWrapper>
-            <ScrollView 
-                contentContainerStyle={[
-                    styles.container,
-                    { backgroundColor: isDark ? '#000000' : '#ffffff' }
-                ]}
+      <NavigationWrapper>
+        <ScrollView
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* 整個登入卡片外框 */}
+          <View style={[styles.card, isDark && styles.cardDark]}>
+            {/* 標題 */}
+            <Text style={[styles.title, { color: isDark ? '#f3f4f6' : '#1f2937' }]}>
+              Log in
+            </Text>
+
+            {/* Google 登入按鈕 */}
+            <Pressable
+              onPress={handleGoogleLogin}
+              disabled={mutation.isPending}
+              style={[
+                styles.googleButton,
+                mutation.isPending && styles.googleButtonDisabled,
+              ]}
             >
-                <View style={styles.content}>
-                    {/* 標題 */}
-                    <Text style={[
-                        styles.title,
-                        { color: isDark ? '#f3f4f6' : '#1f2937' }
-                    ]}>
-                        {mode === 'login' ? 'Login' : 'Register'}
-                    </Text>
+              <Image
+                source={{ uri: 'https://developers.google.com/identity/images/g-logo.png' }}
+                style={styles.googleLogo}
+              />
+              <Text style={styles.googleButtonText}>
+                {mutation.isPending ? 'is loading...' : 'Continue with Google'}
+              </Text>
+            </Pressable>
 
-                    {/* 切換按鈕 */}
-                    <View style={styles.toggleContainer}>
-                        <Pressable
-                            onPress={() => setMode('login')}
-                            style={[
-                                styles.toggleButton,
-                                mode === 'login' && styles.toggleButtonActive,
-                                {
-                                    backgroundColor: mode === 'login'
-                                        ? (isDark ? '#2563eb' : '#3b82f6')
-                                        : (isDark ? '#1f2937' : '#f3f4f6'),
-                                }
-                            ]}
-                        >
-                            <Text style={[
-                                styles.toggleButtonText,
-                                {
-                                    color: mode === 'login'
-                                        ? '#ffffff'
-                                        : (isDark ? '#9ca3af' : '#6b7280'),
-                                }
-                            ]}>
-                                Login
-                            </Text>
-                        </Pressable>
-                        <Pressable
-                            onPress={() => setMode('register')}
-                            style={[
-                                styles.toggleButton,
-                                mode === 'register' && styles.toggleButtonActive,
-                                {
-                                    backgroundColor: mode === 'register'
-                                        ? (isDark ? '#2563eb' : '#3b82f6')
-                                        : (isDark ? '#1f2937' : '#f3f4f6'),
-                                }
-                            ]}
-                        >
-                            <Text style={[
-                                styles.toggleButtonText,
-                                {
-                                    color: mode === 'register'
-                                        ? '#ffffff'
-                                        : (isDark ? '#9ca3af' : '#6b7280'),
-                                }
-                            ]}>
-                                Register
-                            </Text>
-                        </Pressable>
-                    </View>
+            {/* 錯誤訊息 */}
+            {mutation.isError && (
+              <Text style={styles.errorText}>
+              {'System error, please try again.'}
+              </Text>
+            )}
 
-                    {/* 表單 */}
-                    <View style={styles.form}>
-                        {/* 用戶名 */}
-                        <View style={styles.inputGroup}>
-                            <Text style={[
-                                styles.label,
-                                { color: isDark ? '#f3f4f6' : '#1f2937' }
-                            ]}>
-                                Username
-                            </Text>
-                            <TextInput
-                                style={inputStyle}
-                                placeholder="Please enter your username"
-                                placeholderTextColor={placeholderTextColor}
-                                value={username}
-                                onChangeText={setUsername}
-                                autoCapitalize="none"
-                            />
-                        </View>
-
-                        {/* 密碼 */}
-                        <View style={styles.inputGroup}>
-                            <Text style={[
-                                styles.label,
-                                { color: isDark ? '#f3f4f6' : '#1f2937' }
-                            ]}>
-                                Password
-                            </Text>
-                            <TextInput
-                                style={inputStyle}
-                                placeholder="Please enter your password"
-                                placeholderTextColor={placeholderTextColor}
-                                value={password}
-                                onChangeText={setPassword}
-                                secureTextEntry
-                                autoCapitalize="none"
-                            />
-                        </View>
-
-                        {/* 註冊模式：顯示郵箱和電話 */}
-                        {mode === 'register' && (
-                            <>
-                                {/* 郵箱 */}
-                                <View style={styles.inputGroup}>
-                                    <Text style={[
-                                        styles.label,
-                                        { color: isDark ? '#f3f4f6' : '#1f2937' }
-                                    ]}>
-                                        Email
-                                    </Text>
-                                    <TextInput
-                                        style={inputStyle}
-                                        placeholder="Please enter your email"
-                                        placeholderTextColor={placeholderTextColor}
-                                        value={email}
-                                        onChangeText={setEmail}
-                                        keyboardType="email-address"
-                                        autoCapitalize="none"
-                                    />
-                                </View>
-
-                                {/* 電話 */}
-                                <View style={styles.inputGroup}>
-                                    <Text style={[
-                                        styles.label,
-                                        { color: isDark ? '#f3f4f6' : '#1f2937' }
-                                    ]}>
-                                        Phone
-                                    </Text>
-                                    <TextInput
-                                        style={inputStyle}
-                                        placeholder="Please enter your phone number"
-                                        placeholderTextColor={placeholderTextColor}
-                                        value={phone}
-                                        onChangeText={setPhone}
-                                        keyboardType="phone-pad"
-                                    />
-                                </View>
-                            </>
-                        )}
-
-                        {/* 提交按鈕 */}
-                        <Pressable
-                            style={[
-                                styles.submitButton,
-                                {
-                                    backgroundColor: isDark ? '#2563eb' : '#3b82f6',
-                                }
-                            ]}
-                            onPress={() => {
-                                // TODO: 實作登入/註冊邏輯
-                                console.log(mode === 'login' ? 'Login' : 'Register', {
-                                    username,
-                                    password,
-                                    ...(mode === 'register' && { email, phone }),
-                                });
-                            }}
-                        >
-                            <Text style={styles.submitButtonText}>
-                                {mode === 'login' ? 'Login' : 'Register'}
-                            </Text>
-                        </Pressable>
-                    </View>
-                </View>
-            </ScrollView>
-        </NavigationWrapper>
+            {/* 成功訊息 */}
+            {mutation.isSuccess && (
+              <View style={styles.successContainer}>
+                <Text style={styles.successText}>Login Success！</Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
+      </NavigationWrapper>
     );
-}
+  }
 
-const styles = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        padding: 20,
+  const styles = StyleSheet.create({
+    // 讓內容永遠在畫面正中間
+    scrollContainer: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 20,
+      backgroundColor: '#f3f4f6', // 淺色背景
     },
-    content: {
-        width: '100%',
-        maxWidth: 400,
-        alignSelf: 'center',
-        marginTop: 40,
+
+    // 登入卡片外框
+    card: {
+      width: '100%',
+      maxWidth: 420,
+      backgroundColor: '#ffffff',
+      borderRadius: 20,
+      padding: 40,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 10 },
+      shadowOpacity: 0.15,
+      shadowRadius: 20,
+      elevation: 20,
+      alignItems: 'center',
     },
+    cardDark: {
+      backgroundColor: '#111827',
+      shadowColor: '#000',
+    },
+
     title: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        marginBottom: 30,
-        textAlign: 'center',
+      fontSize: 36,
+      fontWeight: 'bold',
+      marginBottom: 40,
+      textAlign: 'center',
     },
-    toggleContainer: {
-        flexDirection: 'row',
-        marginBottom: 30,
-        borderRadius: 8,
-        padding: 4,
-        backgroundColor: '#f3f4f6',
-    },
-    toggleButton: {
-        flex: 1,
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        borderRadius: 6,
-        alignItems: 'center',
-    },
-    toggleButtonActive: {
-        // Active state handled by backgroundColor
-    },
-    toggleButtonText: {
-        fontSize: 16,
-        fontWeight: '600',
-    },
-    form: {
-        gap: 20,
-    },
-    inputGroup: {
-        gap: 8,
-    },
-    label: {
-        fontSize: 14,
-        fontWeight: '500',
-    },
-    input: {
-        height: 50,
-        borderWidth: 1,
-        borderRadius: 8,
-        paddingHorizontal: 16,
-        fontSize: 16,
-    },
-    submitButton: {
-        height: 50,
-        borderRadius: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10,
-    },
-    submitButtonText: {
-        color: '#ffffff',
-        fontSize: 16,
-        fontWeight: '600',
-    },
-});
 
+    googleButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: '#4285f4',
+      height: 56,
+      width: '100%',
+      borderRadius: 12,
+      gap: 16,
+    },
+    googleButtonDisabled: {
+      opacity: 0.7,
+    },
+    googleLogo: {
+      width: 24,
+      height: 24,
+    },
+    googleButtonText: {
+      color: '#ffffff',
+      fontSize: 17,
+      fontWeight: '600',
+    },
+
+    // 錯誤訊息區塊
+    errorContainer: {
+      marginTop: 24,
+      padding: 16,
+      backgroundColor: '#fee2e2',
+      borderRadius: 12,
+      width: '100%',
+      borderWidth: 1,
+      borderColor: '#fecaca',
+    },
+    errorText: {
+      color: '#dc2626',
+      fontSize: 15,
+      textAlign: 'center',
+      fontWeight: '500',
+    },
+
+    // 成功訊息
+    successContainer: {
+      marginTop: 24,
+      padding: 16,
+      backgroundColor: '#dcfce7',
+      borderRadius: 12,
+      width: '100%',
+      borderWidth: 1,
+      borderColor: '#bbf7d0',
+    },
+    successText: {
+      color: '#16a34a',
+      fontSize: 15,
+      textAlign: 'center',
+      fontWeight: '500',
+    },
+  });
