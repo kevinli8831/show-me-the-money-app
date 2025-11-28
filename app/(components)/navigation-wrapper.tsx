@@ -18,7 +18,7 @@
 import React from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import BottomTabBar from './bottom-tab-bar';
-import  breakpoints from '../constants/breakpoints';
+import breakpoints from '@/constants/breakpoints';
 
 interface NavigationWrapperProps {
   children: React.ReactNode;

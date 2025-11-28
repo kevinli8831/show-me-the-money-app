@@ -3,7 +3,7 @@ import * as AuthSession from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
-import NavigationWrapper from '../components/navigation-wrapper';
+import NavigationWrapper from '@/components/navigation-wrapper';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -12,6 +12,7 @@ export default function Login() {
   const isDark = colorScheme === 'dark';
   const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
   console.log('redirectUri', AuthSession.makeRedirectUri({ scheme: 'showmethemoney' }));
+  
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
     responseType: 'code',
@@ -20,6 +21,7 @@ export default function Login() {
     redirectUri: AuthSession.makeRedirectUri({ scheme: 'showmethemoney' }),
     scopes: ['profile', 'email'],
   });
+
   // 用 useMutation 封裝「把 idToken 送去後端」的邏輯
   const mutation = useMutation({
     mutationFn: async (code: string) => {
@@ -49,24 +51,24 @@ export default function Login() {
 
   const handleGoogleLogin = async () => {
     // mutation.reset(); // 清除舊錯誤
-try {
+    try {
       const result = await promptAsync();
-    if (result.type === 'success' && result.params.code) {
-      const { code } = result.params;  // 攞code（如果auto exchange fail，呢度仲有code）
-console.log(code);
-console.log(result);
-      // 即時傳畀後端，唔等response變token
-      mutation.mutate(code);
-      if (mutation.data) {
-        // 存JWT，登入成功
-        console.log('User:', mutation.data);
+      if (result.type === 'success' && result.params.code) {
+        const { code } = result.params;  // 攞code（如果auto exchange fail，呢度仲有code）
+        console.log(code);
+        console.log(result);
+        // 即時傳畀後端，唔等response變token
+        mutation.mutate(code);
+        if (mutation.data) {
+          // 存JWT，登入成功
+          console.log('User:', mutation.data);
+        }
+      } else if (result.type === 'error') {
+        console.log('Error:', result.error);  // 睇full error
       }
-    } else if (result.type === 'error') {
-      console.log('Error:', result.error);  // 睇full error
+    } catch (error) {
+      console.error('Login error:', error);
     }
-} catch (error) {
-  console.error('Login error:', error);
-}
   };
 
   return (

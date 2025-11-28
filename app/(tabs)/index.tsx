@@ -14,7 +14,7 @@ import { useQuery } from '@tanstack/react-query';
 import { View } from "react-native";
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
-import NavigationWrapper from "../components/navigation-wrapper";
+import NavigationWrapper from "@/app/(components)/navigation-wrapper";
 
 export default function Index() {
     // 使用 React Query 獲取 GitHub 倉庫資料
