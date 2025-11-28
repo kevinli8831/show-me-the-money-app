@@ -1,12 +1,10 @@
-import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
-import * as AuthSession from 'expo-auth-session';
 import { useMutation } from '@tanstack/react-query';
-import { useColorScheme } from 'react-native';
-import { Alert, Image, Pressable,ScrollView, Text, View, StyleSheet } from 'react-native';
-import { useEffect } from 'react';
-import { NavigationWrapper } from '../components/navigation-wrapper';
+import * as AuthSession from 'expo-auth-session';
+import * as Google from 'expo-auth-session/providers/google';
 import Constants from 'expo-constants';
+import * as WebBrowser from 'expo-web-browser';
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { NavigationWrapper } from '../components/navigation-wrapper';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -14,23 +12,22 @@ export default function Login() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl;
-  console.log(AuthSession.makeRedirectUri({ scheme: 'showmethemoney' }));
-
+  console.log('redirectUri', AuthSession.makeRedirectUri({ scheme: 'showmethemoney' }));
   const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId: Constants.expoConfig?.extra?.googleWebClientId,
-    clientSecret: Constants.expoConfig?.extra?.googleClientSecret,
-    // redirectUri: 'localhost:8081/auth/google/mobile-redirect',
+    webClientId:Constants.expoConfig?.extra?.googleWebClientId,
+    responseType: 'code',
+    usePKCE: true,
+    shouldAutoExchangeCode:false,
     redirectUri: AuthSession.makeRedirectUri({ scheme: 'showmethemoney' }),
     scopes: ['profile', 'email'],
   });
-
   // 用 useMutation 封裝「把 idToken 送去後端」的邏輯
   const mutation = useMutation({
-    mutationFn: async (idToken: string) => {
-      const res = await fetch(`${API_BASE_URL}/auth/google/token`, {
+    mutationFn: async (code: string) => {
+      const res = await fetch(`${API_BASE_URL}/auth/google/exchange`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ idToken }),
+        body: JSON.stringify({ code, redirectUri: AuthSession.makeRedirectUri({ scheme: 'showmethemoney' }), codeVerifier: request?.codeVerifier }),
       });
 
       if (!res.ok) {
@@ -51,21 +48,26 @@ export default function Login() {
     },
   });
 
-  // 監聽 Google 登入回傳
-  useEffect(() => {
-    if (response?.type === 'success') {
-      const { authentication } = response;
-      if (authentication?.idToken) {
-        mutation.mutate(authentication.idToken);
+  const handleGoogleLogin = async () => {
+    // mutation.reset(); // 清除舊錯誤
+try {
+      const result = await promptAsync();
+    if (result.type === 'success' && result.params.code) {
+      const { code } = result.params;  // 攞code（如果auto exchange fail，呢度仲有code）
+console.log(code);
+console.log(result);
+      // 即時傳畀後端，唔等response變token
+      mutation.mutate(code);
+      if (mutation.data) {
+        // 存JWT，登入成功
+        console.log('User:', mutation.data);
       }
-    } else if (response?.type === 'error') {
-      Alert.alert('Google Login Failed', response.error?.message || 'Please try again.');
+    } else if (result.type === 'error') {
+      console.log('Error:', result.error);  // 睇full error
     }
-  }, [response]);
-
-  const handleGoogleLogin = () => {
-    mutation.reset(); // 清除舊錯誤
-    promptAsync();
+} catch (error) {
+  console.error('Login error:', error);
+}
   };
 
   return (
@@ -82,29 +84,29 @@ export default function Login() {
           </Text>
 
           {/* Google 登入按鈕 */}
-    <Pressable
-      onPress={handleGoogleLogin}
-      disabled={!request || mutation.isPending}
-      style={[
-        styles.googleButton,
-        (!request || mutation.isPending) && styles.googleButtonDisabled,
-      ]}
-    >
-      <Image
-        source={{ uri: 'https://developers.google.com/identity/images/g-logo.png' }}
-        style={styles.googleLogo}
-      />
-      <Text style={styles.googleButtonText}>
+          <Pressable
+            onPress={handleGoogleLogin}
+            disabled={!request || mutation.isPending}
+            style={[
+              styles.googleButton,
+              (!request || mutation.isPending) && styles.googleButtonDisabled,
+            ]}
+          >
+            <Image
+              source={{ uri: 'https://developers.google.com/identity/images/g-logo.png' }}
+              style={styles.googleLogo}
+            />
+            <Text style={styles.googleButtonText}>
               {mutation.isPending ? 'is loading...' : 'Continue with Google'}
-      </Text>
+            </Text>
           </Pressable>
 
           {/* 錯誤訊息 */}
-      {mutation.isError && (
-        <Text style={styles.errorText}>
-            {'System error, please try again.'}
-        </Text>
-      )}
+          {mutation.isError && (
+            <Text style={styles.errorText}>
+              {'System error, please try again.'}
+            </Text>
+          )}
 
           {/* 成功訊息 */}
           {mutation.isSuccess && (
