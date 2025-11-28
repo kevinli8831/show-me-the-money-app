@@ -4,6 +4,7 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
 import NavigationWrapper from '@/components/navigation-wrapper';
+import { useAuth } from '@/hooks/useAuth';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -11,7 +12,7 @@ export default function Login() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
-  console.log('redirectUri', AuthSession.makeRedirectUri({ scheme: 'showmethemoney' }));
+  const { login } = useAuth();
   
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
@@ -41,6 +42,11 @@ export default function Login() {
     onSuccess: (data) => {
       Alert.alert('Login success', 'Welcome back!');
       console.log('Login success:', data);
+      login({
+        user: data.user,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+      })
     },
 
     onError: (error: any) => {

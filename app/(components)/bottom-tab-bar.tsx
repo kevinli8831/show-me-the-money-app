@@ -14,13 +14,13 @@
 
 import { usePathname, useRouter } from 'expo-router';
 import React from 'react';
-import { Platform, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';
-import { Home, LogIn, MapPin } from 'react-native-feather';
+import { Platform, Pressable, StyleSheet, Text, useColorScheme, View, Image } from 'react-native';
+import { Home, LogIn, MapPin, User } from 'react-native-feather';
+import { useAuth } from '@/hooks/useAuth';
 
 // 導航項配置：定義底部導航欄的所有標籤頁
 const NAV_ITEMS = [
   { label: 'Home', route: '/(tabs)', icon: Home },      // 首頁
-  { label: 'Login', route: '/(tabs)/login', icon: LogIn }, // 登入頁
   { label: 'Trip', route: '/(tabs)/trip', icon: MapPin },  // 行程頁
 ];
 
@@ -32,6 +32,8 @@ export default function BottomTabBar() {
   // 獲取當前顏色主題（深色/淺色）
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+  const { user } = useAuth();
+  console.log("user36:"+user)
 
   /**
    * 處理標籤頁點擊事件
@@ -52,11 +54,7 @@ export default function BottomTabBar() {
       ]}>
       {NAV_ITEMS.map((item) => {
         // 檢查當前路徑是否匹配該導航項的路由，用於判斷啟動狀態
-        const isActive = 
-          pathname === item.route || 
-          pathname === item.route + '/' ||
-          // 特殊處理：首頁路由可能有多種形式
-          (item.route === '/(tabs)' && (pathname === '/' || pathname === '/(tabs)' || pathname === '/(tabs)/'));
+        const isActive = pathname === item.route;
         
         // 根據啟動狀態和主題設置圖示顏色
         // 啟動：藍色（淺色模式 #2563eb，深色模式 #60a5fa）
@@ -107,6 +105,34 @@ export default function BottomTabBar() {
           </Pressable>
         );
       })}
+      {/* Profile / Login tab */}
+      <Pressable
+        onPress={() => router.push('/(tabs)/login')} // 假設有 profile 頁
+        style={({ pressed }) => [
+          styles.tab,
+          pressed && styles.tabPressed,
+        ]}>
+        {user ? (
+          <Image
+            source={{ uri: user.avatarUrl || 'default-avatar-url' }}
+            style={styles.avatarImage}
+          />
+        ) : (
+          <User 
+            stroke={pathname.includes('login') ? (isDark ? '#3b82f6' : '#2563eb') : (isDark ? '#9ca3af' : '#6b7280')} 
+            width={24} 
+            height={24} 
+            style={styles.icon}
+          />
+        )}
+        <Text
+          style={[
+            styles.label,
+            { color: pathname.includes('profile') || pathname.includes('login') ? (isDark ? '#f3f4f6' : '#1f2937') : (isDark ? '#9ca3af' : '#6b7280') },
+          ]}>
+          {user ? 'Profile' : 'Login'}
+        </Text>
+      </Pressable>
     </View>
   );
 }
@@ -149,6 +175,17 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 12,
     fontWeight: '500', // 中等粗細
+  },
+  avatarCircle: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginBottom: 4,
+  },
+  avatarImage: {
+    width: 24,
+    height: 24,
   },
 });
 

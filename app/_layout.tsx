@@ -20,6 +20,7 @@ import { useWindowDimensions } from 'react-native';
 import "@/global.css";
 import TopUpBar from "@/components/top-up-bar";
 import breakpoints from '@/constants/breakpoints';
+import AuthProvider from '@/hooks/useAuth';
 
 // 建立 React Query 客戶端實例，用於管理伺服器狀態和快取
 const queryClient = new QueryClient()
@@ -33,16 +34,18 @@ export default function RootLayout() {
   return (
     // 提供 React Query 上下文，使所有子組件可以使用 useQuery 等 hooks
     <QueryClientProvider client={queryClient}>
-      <Stack 
-        screenOptions={{
-          // 僅在 Web 平台顯示頂部導航欄
-          headerShown: isWeb,
-          // 在 Web 平台使用自訂的 TopUpBar 組件作為 header
-          // 移動設備不顯示 header，因為使用底部導航欄
-          header: isWeb ? () => <TopUpBar /> : undefined,
-        }}
-      />
-<PortalHost />
+      <AuthProvider>
+        <Stack
+          screenOptions={{
+            // 僅在 Web 平台顯示頂部導航欄
+            headerShown: isWeb,
+            // 在 Web 平台使用自訂的 TopUpBar 組件作為 header
+            // 移動設備不顯示 header，因為使用底部導航欄
+            header: isWeb ? () => <TopUpBar /> : undefined,
+          }}
+        />
+        <PortalHost />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

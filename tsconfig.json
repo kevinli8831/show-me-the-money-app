@@ -11,6 +11,7 @@
       "@/components/*": ["app/(components)/*"],
       "@/constants/*": ["app/(constants)/*"],
       "@/hooks/*": ["app/(hooks)/*"],
+      "@/lib/*": ["app/(lib)/*"],
       "@/tabs/*": ["app/(tabs)/*"],
     }
   },
