@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import * as AuthSession from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
-import Constants from 'expo-constants';
 import * as WebBrowser from 'expo-web-browser';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
 import { NavigationWrapper } from '../components/navigation-wrapper';
@@ -11,10 +10,10 @@ WebBrowser.maybeCompleteAuthSession();
 export default function Login() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const API_BASE_URL = Constants.expoConfig?.extra?.apiBaseUrl;
+  const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
   console.log('redirectUri', AuthSession.makeRedirectUri({ scheme: 'showmethemoney' }));
   const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId:Constants.expoConfig?.extra?.googleWebClientId,
+    webClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
     responseType: 'code',
     usePKCE: true,
     shouldAutoExchangeCode:false,
