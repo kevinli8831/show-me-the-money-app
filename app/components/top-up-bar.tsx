@@ -16,7 +16,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Animated, Image, Platform, Pressable, Text, useColorScheme, useWindowDimensions, View } from 'react-native';
 import { Menu } from 'react-native-feather';
-import { breakpoints } from '../constants/breakpoints';
+import breakpoints from '../constants/breakpoints';
 
 // 導航項配置：定義所有可用的導航連結
 const NAV_ITEMS = [
@@ -25,7 +25,7 @@ const NAV_ITEMS = [
   { label: 'Login', route: '/(tabs)/login' },
 ];
 
-export function TopUpBar() {
+export default function TopUpBar() {
   // 獲取視窗寬度，用於響應式設計
   const { width } = useWindowDimensions();
   // 獲取路由導航器，用於頁面跳轉

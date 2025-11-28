@@ -17,10 +17,12 @@
  * - lg: 大螢幕（小桌面）
  * - xl: 超大螢幕（大桌面）
  */
-export const breakpoints = {
+const breakpoints = {
   xs: 0,      // 超小螢幕：< 600px（手機豎屏）
   sm: 600,    // 小螢幕：>= 600px（手機橫屏/小平板）
   md: 905,    // 中等螢幕：>= 905px（平板）
   lg: 1240,   // 大螢幕：>= 1240px（小桌面顯示器）
   xl: 1440,   // 超大螢幕：>= 1440px（大桌面顯示器）
 };
+
+export default breakpoints;

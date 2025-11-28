@@ -17,14 +17,14 @@
 
 import React from 'react';
 import { View, useWindowDimensions } from 'react-native';
-import { BottomTabBar } from './bottom-tab-bar';
-import { breakpoints } from '../constants/breakpoints';
+import BottomTabBar from './bottom-tab-bar';
+import  breakpoints from '../constants/breakpoints';
 
 interface NavigationWrapperProps {
   children: React.ReactNode;
 }
 
-export function NavigationWrapper({ children }: NavigationWrapperProps) {
+export default function NavigationWrapper({ children }: NavigationWrapperProps) {
   // 檢測當前執行平台是否為 Web
   const { width } = useWindowDimensions();
   const isWeb = width > breakpoints.sm;

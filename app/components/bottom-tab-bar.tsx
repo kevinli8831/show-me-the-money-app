@@ -24,7 +24,7 @@ const NAV_ITEMS = [
   { label: 'Trip', route: '/(tabs)/trip', icon: MapPin },  // 行程頁
 ];
 
-export function BottomTabBar() {
+export default function BottomTabBar() {
   // 獲取路由導航器，用於頁面跳轉
   const router = useRouter();
   // 獲取當前路徑，用於判斷哪個標籤頁處於啟動狀態

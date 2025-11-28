@@ -3,7 +3,7 @@ import * as AuthSession from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
-import { NavigationWrapper } from '../components/navigation-wrapper';
+import NavigationWrapper from '../components/navigation-wrapper';
 
 WebBrowser.maybeCompleteAuthSession();
 
