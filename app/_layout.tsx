@@ -18,6 +18,7 @@ import { useWindowDimensions } from 'react-native';
 import "../global.css";
 import { TopUpBar } from "./components/top-up-bar";
 import { breakpoints } from './constants/breakpoints';
+import { PortalHost } from '@rn-primitives/portal'
 
 
 // 建立 React Query 客戶端實例，用於管理伺服器狀態和快取
@@ -41,6 +42,7 @@ export default function RootLayout() {
           header: isWeb ? () => <TopUpBar /> : undefined,
         }}
       />
+      <PortalHost />
     </QueryClientProvider>
   );
 }
