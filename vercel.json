@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm expo export --platform web",
+  "buildCommand": "pnpm expo export --platform web --max-workers 1",
   "outputDirectory": "dist",
   "devCommand": "pnpm expo start --web",
   "cleanUrls": true,
