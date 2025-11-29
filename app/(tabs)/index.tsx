@@ -10,16 +10,14 @@
  * 路由：/(tabs) 或 /
  */
 
-import {
-    useQuery
-} from '@tanstack/react-query';
-import { Text, View } from "react-native";
+import { useQuery } from '@tanstack/react-query';
+import { View } from "react-native";
+import { Button } from '../../components/ui/button';
+import { Text } from '../../components/ui/text';
 import { NavigationWrapper } from "../components/navigation-wrapper";
 
 export default function Index() {
     // 使用 React Query 獲取 GitHub 倉庫資料
-    // queryKey: 快取鍵，用於標識這個查詢
-    // queryFn: 查詢函數，執行實際的資料獲取
     const { isPending, error, data } = useQuery({
         queryKey: ['repoData'],
         queryFn: () =>
@@ -28,21 +26,55 @@ export default function Index() {
             ),
     })
 
-
     // 顯示載入狀態
-    if (isPending) return <Text>Loading...</Text>;
+    if (isPending) return (
+        <NavigationWrapper>
+            <View className="flex-1 items-center justify-center">
+                <Text>Loading...</Text>
+            </View>
+        </NavigationWrapper>
+    );
 
     // 顯示錯誤資訊
-    if (error) return <Text>An error has occurred: {error.message}</Text>;
+    if (error) return (
+        <NavigationWrapper>
+            <View className="flex-1 items-center justify-center">
+                <Text>An error has occurred: {error.message}</Text>
+            </View>
+        </NavigationWrapper>
+    );
 
     // 渲染主要內容
     return (
         <NavigationWrapper>
-            <View className="flex-1 bg-white dark:bg-black items-center justify-center">
-                {/* 顯示倉庫名稱 */}
-                <Text className="text-2xl font-bold mb-2">{data.name}</Text>
-                {/* 顯示倉庫描述 */}
-                <Text className="text-base text-gray-700 dark:text-gray-200">{data.description}</Text>
+            <View className="flex-1 bg-white dark:bg-background items-center justify-center gap-4 p-4">
+                <Text variant="h1" className="mb-4">NativeWind v4 + Reusables</Text>
+                
+                <Text className="text-center mb-4">
+                    Repo: {data.name}
+                </Text>
+
+                <View className="flex-row flex-wrap gap-4 justify-center">
+                    <Button onPress={() => console.log('Default pressed')}>
+                        <Text>Default Button</Text>
+                    </Button>
+
+                    <Button variant="destructive" onPress={() => console.log('Destructive pressed')}>
+                        <Text>Destructive</Text>
+                    </Button>
+
+                    <Button variant="outline" onPress={() => console.log('Outline pressed')}>
+                        <Text>Outline</Text>
+                    </Button>
+
+                    <Button variant="secondary" onPress={() => console.log('Secondary pressed')}>
+                        <Text>Secondary</Text>
+                    </Button>
+
+                    <Button variant="ghost" onPress={() => console.log('Ghost pressed')}>
+                        <Text>Ghost</Text>
+                    </Button>
+                </View>
             </View>
         </NavigationWrapper>
     );

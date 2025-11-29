@@ -13,15 +13,10 @@
  */
 
 import { useRouter } from 'expo-router';
-import { styled } from 'nativewind';
 import React, { useState } from 'react';
 import { Animated, Image, Platform, Pressable, Text, useColorScheme, useWindowDimensions, View } from 'react-native';
 import { Menu } from 'react-native-feather';
 import { breakpoints } from '../constants/breakpoints';
-
-// 使用 NativeWind 的 styled 函數建立樣式化的組件
-const StyledAnimatedView = styled(Animated.View);
-const StyledPressable = styled(Pressable);
 
 // 導航項配置：定義所有可用的導航連結
 const NAV_ITEMS = [
