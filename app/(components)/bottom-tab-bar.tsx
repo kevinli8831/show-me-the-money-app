@@ -16,7 +16,7 @@ import { usePathname, useRouter } from 'expo-router';
 import React from 'react';
 import { Platform, Pressable, StyleSheet, Text, useColorScheme, View, Image } from 'react-native';
 import { Home, LogIn, MapPin, User } from 'react-native-feather';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/app/hooks/useAuth';
 
 // 導航項配置：定義底部導航欄的所有標籤頁
 const NAV_ITEMS = [

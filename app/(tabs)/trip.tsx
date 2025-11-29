@@ -11,7 +11,8 @@
  */
 
 import { Text, View } from "react-native";
-import NavigationWrapper from "@/components/navigation-wrapper";
+import NavigationWrapper from "@/app/components/navigation-wrapper";
+import React from "react";
 
 export default function Trip() {
     return (

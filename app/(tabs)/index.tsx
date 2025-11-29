@@ -15,6 +15,7 @@ import { View } from "react-native";
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
 import NavigationWrapper from "@/app/(components)/navigation-wrapper";
+import React from 'react';
 
 export default function Index() {
     // 使用 React Query 獲取 GitHub 倉庫資料

@@ -18,9 +18,9 @@ import { Stack } from "expo-router";
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
 import "@/global.css";
-import TopUpBar from "@/components/top-up-bar";
-import breakpoints from '@/constants/breakpoints';
-import AuthProvider from '@/hooks/useAuth';
+import TopUpBar from "@/app/components/top-up-bar";
+import breakpoints from '@/app/constants/breakpoints';
+import AuthProvider from '@/app/hooks/useAuth';
 
 // 建立 React Query 客戶端實例，用於管理伺服器狀態和快取
 const queryClient = new QueryClient()

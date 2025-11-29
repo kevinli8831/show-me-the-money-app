@@ -7,12 +7,12 @@
     "paths": {
       "@/*": ["./*"],
       "@/app/*": ["app/*"],
-      "@/assets/*": ["app/assets/*"],
-      "@/components/*": ["app/(components)/*"],
-      "@/constants/*": ["app/(constants)/*"],
-      "@/hooks/*": ["app/(hooks)/*"],
-      "@/lib/*": ["app/(lib)/*"],
-      "@/tabs/*": ["app/(tabs)/*"],
+      "@/app/assets/*": ["app/assets/*"],
+      "@/app/components/*": ["app/(components)/*"],
+      "@/app/constants/*": ["app/(constants)/*"],
+      "@/app/hooks/*": ["app/(hooks)/*"],
+      "@/app/lib/*": ["app/(lib)/*"],
+      "@/app/tabs/*": ["app/(tabs)/*"],
     }
   },
   "include": [

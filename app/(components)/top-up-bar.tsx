@@ -16,7 +16,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Animated, Image, Platform, Pressable, Text, useColorScheme, useWindowDimensions, View } from 'react-native';
 import { Menu } from 'react-native-feather';
-import breakpoints from '@/constants/breakpoints';
+import breakpoints from '@/app/constants/breakpoints';
 
 // 導航項配置：定義所有可用的導航連結
 const NAV_ITEMS = [

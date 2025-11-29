@@ -1,8 +1,7 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Platform } from 'react-native';
-import authStorage from '@/lib/auth-storage';
-
+import authStorage from '@/app/lib/auth-storage';
 
 interface User {
   id: string;
