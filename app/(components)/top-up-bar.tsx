@@ -12,11 +12,11 @@
  * 使用場景：僅在 Web 平台使用，作為 Stack 的 header
  */
 
+import { breakpoints, isPlatformWeb } from '@/app/constants/constants';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Animated, Image, Platform, Pressable, Text, useColorScheme, useWindowDimensions, View } from 'react-native';
+import { Animated, Image, Pressable, Text, useColorScheme, useWindowDimensions, View } from 'react-native';
 import { Menu } from 'react-native-feather';
-import breakpoints from '@/app/constants/breakpoints';
 
 // 導航項配置：定義所有可用的導航連結
 const NAV_ITEMS = [
@@ -79,14 +79,14 @@ export default function TopUpBar() {
               borderColor: '#e5e7eb',
               backgroundColor: 'white',
             },
-            Platform.OS === 'web' 
+            isPlatformWeb 
               ? { width: 24, height: 24 }
               : { width: 36, height: 36 }
           ]}
           resizeMode="contain"
           accessibilityLabel="React Logo"
         />
-        <Text className={`${Platform.OS === 'web' ? 'text-lg' : 'text-xl'} font-bold text-blue-600 dark:text-blue-400 tracking-tight`}>Show me the money</Text>
+        <Text className={`${isPlatformWeb ? 'text-lg' : 'text-xl'} font-bold text-blue-600 dark:text-blue-400 tracking-tight`}>Show me the money</Text>
       </View>
       {/* Right: Nav Items or Hamburger Menu Button */}
       {showMenuButton ? (
@@ -190,7 +190,7 @@ export default function TopUpBar() {
                   backgroundColor: 'transparent',
                 },
                 pressed && {
-                  backgroundColor: Platform.OS === 'web' ? '#f3f4f6' : '#e5e7eb',
+                  backgroundColor: isPlatformWeb ? '#f3f4f6' : '#e5e7eb',
                 },
               ]}
             >

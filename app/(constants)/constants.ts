@@ -1,3 +1,5 @@
+import { Platform } from "react-native";
+
 /**
  * 響應式設計斷點常數 (Breakpoints)
  * 
@@ -17,7 +19,7 @@
  * - lg: 大螢幕（小桌面）
  * - xl: 超大螢幕（大桌面）
  */
-const breakpoints = {
+export const breakpoints = {
   xs: 0,      // 超小螢幕：< 600px（手機豎屏）
   sm: 600,    // 小螢幕：>= 600px（手機橫屏/小平板）
   md: 905,    // 中等螢幕：>= 905px（平板）
@@ -25,4 +27,4 @@ const breakpoints = {
   xl: 1440,   // 超大螢幕：>= 1440px（大桌面顯示器）
 };
 
-export default breakpoints;
+export const isPlatformWeb = Platform.OS === 'web';

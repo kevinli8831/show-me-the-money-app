@@ -9,6 +9,10 @@
  *    - 移動設備: 不顯示頂部導航欄（使用底部導航欄）
  */
 
+import TopUpBar from "@/app/components/top-up-bar";
+import { breakpoints } from '@/app/constants/constants';
+import AuthProvider from '@/app/hooks/useAuth';
+import "@/global.css";
 import { PortalHost } from '@rn-primitives/portal';
 import {
   QueryClient,
@@ -17,10 +21,6 @@ import {
 import { Stack } from "expo-router";
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
-import "@/global.css";
-import TopUpBar from "@/app/components/top-up-bar";
-import breakpoints from '@/app/constants/breakpoints';
-import AuthProvider from '@/app/hooks/useAuth';
 
 // 建立 React Query 客戶端實例，用於管理伺服器狀態和快取
 const queryClient = new QueryClient()
