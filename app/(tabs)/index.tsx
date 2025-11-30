@@ -10,16 +10,19 @@
  * 路由：/(tabs) 或 /
  */
 
+import NavigationWrapper from "@/app/(components)/navigation-wrapper";
 import { useQuery } from '@tanstack/react-query';
+import React from 'react';
 import { View } from "react-native";
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
-import NavigationWrapper from "@/app/(components)/navigation-wrapper";
-import React from 'react';
+import { useBear } from '../_layout';
 
 export default function Index() {
+const bears = useBear((state:any) => state.bears)
     // 使用 React Query 獲取 GitHub 倉庫資料
     // queryKey: 快取鍵，用於標識這個查詢
+
     // queryFn: 查詢函數，執行實際的資料獲取
     const { isPending, error, data } = useQuery({
         queryKey: ['repoData'],
@@ -52,7 +55,7 @@ export default function Index() {
         <NavigationWrapper>
             <View className="flex-1 bg-white dark:bg-background items-center justify-center gap-4 p-4">
                 <Text variant="h1" className="mb-4">NativeWind v4 + Reusables</Text>
-
+<h1>{bears} bears around here...</h1>
                 <Text className="text-center mb-4">
                     Repo: {data.name}
                 </Text>
