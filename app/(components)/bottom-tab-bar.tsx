@@ -12,7 +12,7 @@
  * 使用場景：僅在移動設備（iOS/Android）使用
  */
 
-import { useAuth } from '@/app/store/useAuth';
+import {  useAuthStore as useAuth } from '@/app/(store)/authStore';
 import { usePathname, useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Platform, Pressable, StyleSheet, Text, useColorScheme, View } from 'react-native';

@@ -1,4 +1,4 @@
-import { useAuth } from '@/app/store/useAuth';
+import { useAuthStore as useAuth } from '@/app/(store)/authStore';
 import NavigationWrapper from '@/app/components/navigation-wrapper';
 import { useMutation } from '@tanstack/react-query';
 import * as AuthSession from 'expo-auth-session';
@@ -47,7 +47,7 @@ export default function Login() {
         user: data.user,
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
-      })
+      });
     },
 
     onError: (error: any) => {

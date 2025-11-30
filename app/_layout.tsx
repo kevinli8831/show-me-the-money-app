@@ -9,7 +9,7 @@
  *    - 移動設備: 不顯示頂部導航欄（使用底部導航欄）
  */
 
-import AuthProvider from '@/app/store/useAuth';
+import { useAuthStore } from '@/app/(store)/authStore';
 import TopUpBar from "@/app/components/top-up-bar";
 import { breakpoints } from '@/app/constants/constants';
 import "@/global.css";
@@ -19,7 +19,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { Stack } from "expo-router";
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useWindowDimensions } from 'react-native';
 
 // 建立 React Query 客戶端實例，用於管理伺服器狀態和快取
@@ -31,21 +31,25 @@ export default function RootLayout() {
   const { width } = useWindowDimensions();
   const isWeb = width > breakpoints.sm;
 
+  const hydrate = useAuthStore((s) => s.hydrateFromRefreshToken);
+
+  useEffect(() => {
+    hydrate();
+  }, []);
+
   return (
     // 提供 React Query 上下文，使所有子組件可以使用 useQuery 等 hooks
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Stack
-          screenOptions={{
-            // 僅在 Web 平台顯示頂部導航欄
-            headerShown: isWeb,
-            // 在 Web 平台使用自訂的 TopUpBar 組件作為 header
-            // 移動設備不顯示 header，因為使用底部導航欄
-            header: isWeb ? () => <TopUpBar /> : undefined,
-          }}
-        />
-        <PortalHost />
-      </AuthProvider>
+      <Stack
+        screenOptions={{
+          // 僅在 Web 平台顯示頂部導航欄
+          headerShown: isWeb,
+          // 在 Web 平台使用自訂的 TopUpBar 組件作為 header
+          // 移動設備不顯示 header，因為使用底部導航欄
+          header: isWeb ? () => <TopUpBar /> : undefined,
+        }}
+      />
+      <PortalHost />
     </QueryClientProvider>
   );
 }
