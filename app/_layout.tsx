@@ -20,11 +20,9 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { Stack } from "expo-router";
-import React from 'react';
-import { View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
-import { Platform, useWindowDimensions } from 'react-native';
+import { Platform, useWindowDimensions, View } from 'react-native';
 
 // 處理 OAuth callback - 必須喺 component 外面 call
 WebBrowser.maybeCompleteAuthSession();
