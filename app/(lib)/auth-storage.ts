@@ -1,22 +1,30 @@
 import { isPlatformWeb } from '@/app/constants/constants';
-import * as SecureStore from 'expo-secure-store';
+import { createMMKV } from 'react-native-mmkv';
 
 const KEY = 'refreshToken';
 
+const mmkv = createMMKV({
+  id: 'auth-storage',
+  encryptionKey: isPlatformWeb ? undefined : 'hunter2-hunter2-hunter2-hunter2', // Web 不加密
+});
+
+
 const authStorage = {
   async saveRefreshToken(token: string) {
+    if (!token) return;
+
     if (isPlatformWeb) return; // Web 靠 HttpOnly Cookie
-    await SecureStore.setItemAsync(KEY, token);
+    mmkv.set(KEY, token);
   },
 
   async getRefreshToken(): Promise<string | null> {
     if (isPlatformWeb) return null;
-    return await SecureStore.getItemAsync(KEY);
+     return mmkv.getString(KEY) || null;
   },
 
   async clear() {
     if (isPlatformWeb) return;
-    await SecureStore.deleteItemAsync(KEY);
+    await mmkv.remove(KEY);
   },
 };
 

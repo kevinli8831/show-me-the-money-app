@@ -10,8 +10,8 @@
       "@/app/assets/*": ["app/assets/*"],
       "@/app/components/*": ["app/(components)/*"],
       "@/app/constants/*": ["app/(constants)/*"],
-      "@/app/hooks/*": ["app/(hooks)/*"],
       "@/app/lib/*": ["app/(lib)/*"],
+      "@/app/store/*": ["app/(store)/*"],
       "@/app/tabs/*": ["app/(tabs)/*"],
     }
   },

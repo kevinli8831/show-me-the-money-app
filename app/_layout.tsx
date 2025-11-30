@@ -9,9 +9,9 @@
  *    - 移動設備: 不顯示頂部導航欄（使用底部導航欄）
  */
 
+import AuthProvider from '@/app/store/useAuth';
 import TopUpBar from "@/app/components/top-up-bar";
 import { breakpoints } from '@/app/constants/constants';
-import AuthProvider from '@/app/hooks/useAuth';
 import "@/global.css";
 import { PortalHost } from '@rn-primitives/portal';
 import {
