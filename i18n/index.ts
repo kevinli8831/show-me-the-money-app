@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 // 用新包
-import LanguageDetector from '@os-team/i18next-react-native-language-detector';
+import languageDetector from './language-detector';
 
 import en from '../locales/en.json';
 import hk from '../locales/zh-HK.json';
@@ -13,7 +13,7 @@ const resources = {
 };
 
 i18n
-  .use(LanguageDetector)  // ← 用呢個新 detector，自動偵測 + 存 AsyncStorage
+  .use(languageDetector)  // Use custom detector
   .use(initReactI18next)
   .init({
     resources,

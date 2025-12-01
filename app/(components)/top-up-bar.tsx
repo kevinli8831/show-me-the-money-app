@@ -12,11 +12,11 @@
  * 使用場景：僅在 Web 平台使用，作為 Stack 的 header
  */
 
+import breakpoints from '@/app/constants/breakpoints';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Animated, Image, Platform, Pressable, Text, useColorScheme, useWindowDimensions, View } from 'react-native';
 import { Menu } from 'react-native-feather';
-import breakpoints from '@/app/constants/breakpoints';
 
 // 導航項配置：定義所有可用的導航連結
 const NAV_ITEMS = [
@@ -156,7 +156,7 @@ export default function TopUpBar() {
                       paddingHorizontal: 12,
                       borderRadius: 8,
                       backgroundColor: pressed 
-                        ? (isDark ? '#1f2937' : '#f3f4f6')
+                        ? (isDark ? '#f3f4f6' : '##1f2937')
                         : 'transparent',
                     },
                   ]}
