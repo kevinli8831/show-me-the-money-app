@@ -2,10 +2,10 @@ import NavigationWrapper from "@/app/(components)/navigation-wrapper";
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from "react-native";
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
-import { useTranslation } from 'react-i18next';
 
 export default function Index() {
     const { t, i18n } = useTranslation();
@@ -65,6 +65,15 @@ export default function Index() {
                 <View className="flex-row flex-wrap gap-4 justify-center">
                     <Button onPress={() => console.log('Default pressed')}>
                         <Text>Create Your Event</Text>
+                    </Button>
+                </View>
+
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                    <Button onPress={() => i18n.changeLanguage('zh-HK')}>
+                        <Text>HK</Text>
+                    </Button>
+                    <Button onPress={() => i18n.changeLanguage('en')}>
+                        <Text>EN</Text>
                     </Button>
                 </View>
             </View>
