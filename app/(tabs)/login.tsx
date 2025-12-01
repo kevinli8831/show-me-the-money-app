@@ -1,22 +1,22 @@
+import NavigationWrapper from '@/app/components/navigation-wrapper';
+import { useAuth } from '@/app/hooks/useAuth';
+import { API_BASE_URL, GOOGLE_CLIENT_ID } from '@/lib/config';
 import { useMutation } from '@tanstack/react-query';
 import * as AuthSession from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
-import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
-import NavigationWrapper from '@/app/components/navigation-wrapper';
-import { useAuth } from '@/app/hooks/useAuth';
 import React from 'react';
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function Login() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
   const { login } = useAuth();
   
   const [request, response, promptAsync] = Google.useAuthRequest({
-    webClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
+    webClientId: GOOGLE_CLIENT_ID,
     responseType: 'code',
     usePKCE: true,
     shouldAutoExchangeCode:false,
