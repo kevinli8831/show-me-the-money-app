@@ -156,7 +156,7 @@ export default function TopUpBar() {
                       paddingHorizontal: 12,
                       borderRadius: 8,
                       backgroundColor: pressed 
-                        ? (isDark ? '#f3f4f6' : '##1f2937')
+                        ? (isDark ? '#f3f4f6' : '#1f2937')
                         : 'transparent',
                     },
                   ]}
@@ -198,7 +198,7 @@ export default function TopUpBar() {
                 style={{
                   fontSize: 16,
                   fontWeight: '500',
-                  color: isDark ? '#f3f4f6' : '#1f2937',
+                  color: isDark ? '#1f2937' : '#f3f4f6',
                 }}
               >
                 {item.label}
