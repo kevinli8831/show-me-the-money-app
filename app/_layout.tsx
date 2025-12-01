@@ -14,6 +14,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import '@/i18n';
 import { Stack } from "expo-router";
 import React from 'react';
 import { useWindowDimensions } from 'react-native';
