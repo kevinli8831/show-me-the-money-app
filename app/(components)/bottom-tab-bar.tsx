@@ -11,30 +11,30 @@
  * 
  * 使用場景：僅在移動設備（iOS/Android）使用
  */
-
 import { usePathname, useRouter } from 'expo-router';
 import React from 'react';
-import { Platform, Pressable, StyleSheet, Text, useColorScheme, View, Image } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View, Image } from 'react-native';
 import { Home, LogIn, MapPin, User } from 'react-native-feather';
 import { useAuth } from '@/app/hooks/useAuth';
-
-// 導航項配置：定義底部導航欄的所有標籤頁
-const NAV_ITEMS = [
-  { label: 'Home', route: '/(tabs)', icon: Home },      // 首頁
-  { label: 'Trip', route: '/(tabs)/trip', icon: MapPin },  // 行程頁
-];
+import { useTranslation } from 'react-i18next';
 
 export default function BottomTabBar() {
   // 獲取路由導航器，用於頁面跳轉
   const router = useRouter();
   // 獲取當前路徑，用於判斷哪個標籤頁處於啟動狀態
   const pathname = usePathname();
-  // 獲取當前顏色主題（深色/淺色）
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
-  const { user } = useAuth();
-  console.log("user36:"+user)
 
+  const { t } = useTranslation();
+
+  const { user } = useAuth();
+
+  // 導航項配置：定義底部導航欄的所有標籤頁
+  const NAV_ITEMS = [
+    { label: 'home', isActive: true, route: '/(tabs)', icon: Home },      // 首頁
+    { label: 'trip', isActive: true, route: '/(tabs)/trip', icon: MapPin },  // 行程頁
+    { label: 'login', isActive: !user, route: '/(tabs)/login', icon: LogIn }, // 登入頁
+    { label: 'profile', isActive: !!user, route: '/(tabs)/profile', icon: user?.avatarUrl || User }, // profile 頁
+  ];
   /**
    * 處理標籤頁點擊事件
    * @param route - 目標路由路徑
@@ -45,12 +45,9 @@ export default function BottomTabBar() {
 
   return (
     <View
+      className={`dark:bg-[#171717] bg-[#ffffff] dark:border-[#333] border-[#e5e7eb]`}
       style={[
         styles.container,
-        {
-          backgroundColor: isDark ? '#171717' : '#ffffff',
-          borderTopColor: isDark ? '#333' : '#e5e7eb',
-        },
       ]}>
       {NAV_ITEMS.map((item) => {
         // 檢查當前路徑是否匹配該導航項的路由，用於判斷啟動狀態
@@ -59,80 +56,48 @@ export default function BottomTabBar() {
         // 根據啟動狀態和主題設置圖示顏色
         // 啟動：藍色（淺色模式 #2563eb，深色模式 #60a5fa）
         // 未啟動：灰色（淺色模式 #6b7280，深色模式 #9ca3af）
-        const iconColor = isActive
-          ? isDark
-            ? '#60a5fa'
-            : '#2563eb'
-          : isDark
-            ? '#9ca3af'
-            : '#6b7280';
-        
-        // 文字顏色與圖示顏色保持一致
-        const textColor = isActive
-          ? isDark
-            ? '#60a5fa'
-            : '#2563eb'
-          : isDark
-            ? '#9ca3af'
-            : '#6b7280';
 
         // 獲取對應的圖示組件
         const IconComponent = item.icon;
 
         return (
-          <Pressable
-            key={item.route}
-            onPress={() => handleTabPress(item.route)}
-            style={({ pressed }) => [
-              styles.tab,
-              pressed && styles.tabPressed,
-            ]}>
-            <IconComponent 
-              stroke={iconColor} 
-              width={24} 
-              height={24} 
-              style={styles.icon}
-            />
-            <Text
-              style={[
-                styles.label,
-                {
-                  color: textColor,
-                },
+          <View key={item.route}>
+          {item.isActive && (
+            <Pressable
+              onPress={() => handleTabPress(item.route)}
+              style={({ pressed }) => [
+                styles.tab,
+                pressed && styles.tabPressed,
               ]}>
-              {item.label}
-            </Text>
-          </Pressable>
+                {item.label === 'profile' && user?.avatarUrl ? (
+                  <View style={styles.avatarCircle}>
+                    <Image
+                      source={{ uri: user.avatarUrl }}
+                      style={styles.avatarImage}
+                    />
+                  </View>
+                ) : (
+                  <>
+                    <IconComponent
+                      className={`dark:text-[#60a5fa] text-[#2563eb] dark:stroke-[#60a5fa] stroke-[#2563eb]`}
+                      width={24}
+                      height={24}
+                      style={styles.icon}
+                    />
+                  </>
+                )}
+                <Text
+                  className={`dark:text-[#60a5fa] text-[#2563eb]`}
+                  style={[
+                    styles.label,
+                  ]}>
+                  {t(item.label)}
+                </Text>
+            </Pressable>
+          )}
+          </View>
         );
       })}
-      {/* Profile / Login tab */}
-      <Pressable
-        onPress={() => router.push('/(tabs)/login')} // 假設有 profile 頁
-        style={({ pressed }) => [
-          styles.tab,
-          pressed && styles.tabPressed,
-        ]}>
-        {user ? (
-          <Image
-            source={{ uri: user.avatarUrl || 'default-avatar-url' }}
-            style={styles.avatarImage}
-          />
-        ) : (
-          <User 
-            stroke={pathname.includes('login') ? (isDark ? '#3b82f6' : '#2563eb') : (isDark ? '#9ca3af' : '#6b7280')} 
-            width={24} 
-            height={24} 
-            style={styles.icon}
-          />
-        )}
-        <Text
-          style={[
-            styles.label,
-            { color: pathname.includes('profile') || pathname.includes('login') ? (isDark ? '#f3f4f6' : '#1f2937') : (isDark ? '#9ca3af' : '#6b7280') },
-          ]}>
-          {user ? 'Profile' : 'Login'}
-        </Text>
-      </Pressable>
     </View>
   );
 }
