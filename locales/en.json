@@ -1,5 +1,8 @@
 {
   "welcome": "Welcome back!",
+  "home": "Home",
+  "trip": "Trip",
+  "login": "Login",
   "trip_detail": "Trip Details",
   "start_date": "Start Date",
   "loading": "Loading..."

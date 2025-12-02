@@ -14,15 +14,16 @@
 
 import breakpoints from '@/app/constants/breakpoints';
 import { useRouter } from 'expo-router';
+import { t } from 'i18next';
 import React, { useState } from 'react';
 import { Animated, Image, Platform, Pressable, Text, useColorScheme, useWindowDimensions, View } from 'react-native';
 import { Menu } from 'react-native-feather';
 
 // 導航項配置：定義所有可用的導航連結
 const NAV_ITEMS = [
-  { label: 'Home', route: '/(tabs)' },
-  { label: 'Trip', route: '/(tabs)/trip' },
-  { label: 'Login', route: '/(tabs)/login' },
+  { label: t('home'), route: '/(tabs)' },
+  { label: t('trip'), route: '/(tabs)/trip' },
+  { label: t('login'), route: '/(tabs)/login' },
 ];
 
 export default function TopUpBar() {
