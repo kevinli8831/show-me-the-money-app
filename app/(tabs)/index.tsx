@@ -1,6 +1,4 @@
 import NavigationWrapper from "@/app/(components)/navigation-wrapper";
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from "react-native";
@@ -10,46 +8,46 @@ import { Text } from '../../components/ui/text';
 export default function Index() {
     const { t, i18n } = useTranslation();
 
-    const fetchTrip = async ({ queryKey }: { queryKey: any }) => {
-    const [_, id] = queryKey;
-    const { data } = await axios.get(`https://show-me-the-money-svc-production.up.railway.app/trips/${id}`);
-        // 如果你有 auth header：
-        // axios.get(url, { headers: { Authorization: `Bearer ${token}` } })
+    // const fetchTrip = async ({ queryKey }: { queryKey: any }) => {
+    // const [_, id] = queryKey;
+    // const { data } = await axios.get(`https://show-me-the-money-svc-production.up.railway.app/trips/${id}`);
+    //     // 如果你有 auth header：
+    //     // axios.get(url, { headers: { Authorization: `Bearer ${token}` } })
 
-        return data;
-    };
+    //     return data;
+    // };
 
-    const tripId = "60"; // hard code temp
+    // const tripId = "60"; // hard code temp
 
-    const {
-        data: trip,
-        isPending,
-        error,
-        refetch,
-    } = useQuery({
-        queryKey: ['id', tripId],
-        queryFn: fetchTrip,
-        enabled: !!tripId,
-        staleTime: 1000 * 60 * 5,
-    });
+    // const {
+    //     data: trip,
+    //     isPending,
+    //     error,
+    //     refetch,
+    // } = useQuery({
+    //     queryKey: ['id', tripId],
+    //     queryFn: fetchTrip,
+    //     enabled: false,
+    //     staleTime: 1000 * 60 * 5,
+    // });
 
-    // 顯示載入狀態
-    if (isPending) return (
-        <NavigationWrapper>
-            <View className="flex-1 items-center justify-center">
-                <Text>Loading...</Text>
-            </View>
-        </NavigationWrapper>
-    );
+    // // 顯示載入狀態
+    // if (isPending) return (
+    //     <NavigationWrapper>
+    //         <View className="flex-1 items-center justify-center">
+    //             <Text>Loading...</Text>
+    //         </View>
+    //     </NavigationWrapper>
+    // );
 
-    // 顯示錯誤資訊
-    if (error) return (
-        <NavigationWrapper>
-            <View className="flex-1 items-center justify-center">
-                <Text>An error has occurred: {error.message}</Text>
-            </View>
-        </NavigationWrapper>
-    );
+    // // 顯示錯誤資訊
+    // if (error) return (
+    //     <NavigationWrapper>
+    //         <View className="flex-1 items-center justify-center">
+    //             <Text>An error has occurred: {error.message}</Text>
+    //         </View>
+    //     </NavigationWrapper>
+    // );
 
     // 渲染主要內容
     return (
@@ -59,7 +57,7 @@ export default function Index() {
 
                 <Text>{t('loading')}</Text>
                 <Text className="text-center mb-4">
-                    Trip: {trip.name}
+                    Trip: 
                 </Text>
 
                 <View className="flex-row flex-wrap gap-4 justify-center">
