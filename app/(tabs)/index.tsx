@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { View } from "react-native";
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
+// import { useQuery } from '@tanstack/react-query';
+// import axios from 'axios';
 
 export default function Index() {
     const { t, i18n } = useTranslation();
@@ -17,7 +19,7 @@ export default function Index() {
     //     return data;
     // };
 
-    // const tripId = "60"; // hard code temp
+    // const tripId = null; // hard code temp
 
     // const {
     //     data: trip,
@@ -27,7 +29,7 @@ export default function Index() {
     // } = useQuery({
     //     queryKey: ['id', tripId],
     //     queryFn: fetchTrip,
-    //     enabled: false,
+    //     enabled: !!tripId,
     //     staleTime: 1000 * 60 * 5,
     // });
 
@@ -53,25 +55,14 @@ export default function Index() {
     return (
         <NavigationWrapper>
             <View className="flex-1 bg-white dark:bg-background items-center justify-center gap-4 p-4">
-                <Text variant="h1" className="mb-4">NativeWind v4 + Reusables</Text>
-
-                <Text>{t('loading')}</Text>
+                <Text variant="h1" className="mb-4">傍水</Text>
                 <Text className="text-center mb-4">
                     Trip: 
                 </Text>
 
                 <View className="flex-row flex-wrap gap-4 justify-center">
                     <Button onPress={() => console.log('Default pressed')}>
-                        <Text>Create Your Event</Text>
-                    </Button>
-                </View>
-
-                <View style={{ flexDirection: 'row', gap: 10 }}>
-                    <Button onPress={() => i18n.changeLanguage('zh-HK')}>
-                        <Text>HK</Text>
-                    </Button>
-                    <Button onPress={() => i18n.changeLanguage('en')}>
-                        <Text>EN</Text>
+                        <Text>Create Your Activity</Text>
                     </Button>
                 </View>
             </View>

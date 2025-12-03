@@ -13,17 +13,32 @@
  */
 
 import { breakpoints, isPlatformWeb } from '@/app/constants/constants';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Text } from '@/components/ui/text';
 import { useRouter } from 'expo-router';
-import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
-import { Animated, Image, Pressable, Text, useWindowDimensions, View } from 'react-native';
-import { Menu } from 'react-native-feather';
+import { useTranslation } from 'react-i18next';
+import { Animated, Image, Pressable, useWindowDimensions, View } from 'react-native';
 
 // 導航項配置：定義所有可用的導航連結
 const NAV_ITEMS = [
   { label: 'home', route: '/(tabs)' },
   { label: 'trip', route: '/(tabs)/trip' },
   { label: 'login', route: '/(tabs)/login' },
+];
+
+// 語言配置：定義所有可用的語言選項
+const LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'zh-HK', label: '繁體中文' },
 ];
 
 export default function TopUpBar() {
@@ -40,7 +55,17 @@ export default function TopUpBar() {
   // 下拉選單的動畫值，用於淡入淡出和滑動效果
   const [dropdownAnim] = useState(new Animated.Value(0));
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+
+  /**
+   * 處理語言切換
+   * @param language - 目標語言代碼
+   */
+  const handleLanguageChange = (language: string) => {
+    i18n.changeLanguage(language);
+    setCurrentLanguage(language);
+  };
 
   /**
    * 切換選單顯示/隱藏狀態
@@ -207,6 +232,26 @@ export default function TopUpBar() {
               </Text>
             </Pressable>
           ))}
+          <DropdownMenu className='px-[16px] py-[8px]'>
+            <DropdownMenuTrigger>
+              <Text className='font-[500] text-[#1f2937] dark:text-white'>
+                {LANGUAGES.map(lang => lang.code === currentLanguage ? lang.label : null).join('')}
+              </Text>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>
+                <Text>{t('language')}</Text>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup value={currentLanguage} onValueChange={handleLanguageChange}>
+                {LANGUAGES.map((lang) => (
+                  <DropdownMenuRadioItem key={lang.code} value={lang.code}>
+                    <Text>{lang.label}</Text>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </View>
       {/* )} */}
     </View>

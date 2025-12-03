@@ -22,9 +22,11 @@ import "@/global.css";
 import TopUpBar from "@/app/components/top-up-bar";
 import breakpoints from '@/app/constants/breakpoints';
 import AuthProvider from '@/app/hooks/useAuth';
+import { enableScreens } from 'react-native-screens';
 
 // 建立 React Query 客戶端實例，用於管理伺服器狀態和快取
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
+enableScreens();
 
 
 export default function RootLayout() {
@@ -43,8 +45,13 @@ export default function RootLayout() {
             // 在 Web 平台使用自訂的 TopUpBar 組件作為 header
             // 移動設備不顯示 header，因為使用底部導航欄
             header: isWeb ? () => <TopUpBar /> : undefined,
+            animation: 'fade',
           }}
-        />
+        >
+          <Stack.Screen name="(tabs)/index" options={{ title: 'Home', animation: 'slide_from_right' }} />
+          <Stack.Screen name="(tabs)/trip" options={{ title: 'Trip', animation: 'slide_from_right' }} />
+          <Stack.Screen name="(tabs)/login" options={{ title: 'Login', animation: 'slide_from_right' }} />
+        </Stack>
         <PortalHost />
       </AuthProvider>
     </QueryClientProvider>
