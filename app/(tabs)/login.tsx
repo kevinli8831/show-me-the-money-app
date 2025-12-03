@@ -19,17 +19,28 @@ export default function Login() {
   // 如果係,就自動 close 個 window
   useEffect(() => {
     if (Platform.OS === 'web') {
+      console.log('=== Popup Close Debug ===');
+      console.log('Platform.OS:', Platform.OS);
+      console.log('window.location.search:', window.location.search);
+      
       // 檢查 URL 有冇 OAuth callback 參數 (code, state 等)
       const urlParams = new URLSearchParams(window.location.search);
       const hasAuthParams = urlParams.has('code') || urlParams.has('state');
+      console.log('hasAuthParams:', hasAuthParams);
+      console.log('window.opener exists:', !!window.opener);
       
       // 如果有 auth params 而且係 popup window (opener 存在)
       if (hasAuthParams && window.opener) {
-        console.log('Detected OAuth popup, will close after auth completes');
+        console.log('✅ Detected OAuth popup, will close after auth completes');
         // 等 auth flow 完成後 close (短暫延遲確保 token 已經傳咗去 parent window)
         setTimeout(() => {
+          console.log('Closing popup now...');
           window.close();
         }, 1000);
+      } else {
+        console.log('❌ Not closing popup because:');
+        if (!hasAuthParams) console.log('  - No auth params in URL');
+        if (!window.opener) console.log('  - No window.opener (not a popup)');
       }
     }
   }, []);
@@ -42,6 +53,14 @@ export default function Login() {
     redirectUri: AuthSession.makeRedirectUri({ scheme: 'showmethemoney' }),
     scopes: ['profile', 'email'],
   });
+
+  // Debug: 睇吓實際用緊咩 redirect URI
+  useEffect(() => {
+    if (request) {
+      console.log('Redirect URI:', request.redirectUri);
+      console.log('Full request:', request);
+    }
+  }, [request]);
 
   // 用 useMutation 封裝「把 idToken 送去後端」的邏輯
   const mutation = useMutation({
