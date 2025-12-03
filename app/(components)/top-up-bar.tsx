@@ -12,12 +12,10 @@
  * 使用場景：僅在 Web 平台使用，作為 Stack 的 header
  */
 
-import { breakpoints, isPlatformWeb } from '@/app/constants/constants';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
-import { Animated, Image, Pressable, Text, useWindowDimensions, View } from 'react-native';
-import { Menu } from 'react-native-feather';
+import { Animated, Image, Pressable, Text, View } from 'react-native';
 
 // 導航項配置：定義所有可用的導航連結
 const NAV_ITEMS = [
@@ -27,15 +25,11 @@ const NAV_ITEMS = [
 ];
 
 export default function TopUpBar() {
-  // 獲取視窗寬度，用於響應式設計
-  const { width } = useWindowDimensions();
   // 獲取路由導航器，用於頁面跳轉
   const router = useRouter();
 
   // 控制下拉選單的顯示/隱藏狀態
   const [menuOpen, setMenuOpen] = useState(false);
-  // 當螢幕寬度小於 600px 時，顯示漢堡選單按鈕而不是完整導航項
-  const showMenuButton = width < breakpoints.sm;
   
   // 下拉選單的動畫值，用於淡入淡出和滑動效果
   const [dropdownAnim] = useState(new Animated.Value(0));
@@ -180,21 +174,9 @@ export default function TopUpBar() {
       ) : ( */}
         <View style={{ flexDirection: 'row', gap: 8 }}>
           {NAV_ITEMS.map((item) => (
-            <Pressable
+            <Pressable className={`px-3 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-neutral-800`}
               key={item.route}
               onPress={() => handleNavItemPress(item.route)}
-              style={({ pressed }) => [
-                {
-                  paddingVertical: 8,
-                  paddingHorizontal: 16,
-                  borderRadius: 8,
-                  marginHorizontal: 4,
-                  backgroundColor: 'transparent',
-                },
-                pressed && {
-                  backgroundColor: isPlatformWeb ? '#f3f4f6' : '#e5e7eb',
-                },
-              ]}
             >
               <Text 
                 className={`dark:text-[#244444] text-[#1f2937]`}

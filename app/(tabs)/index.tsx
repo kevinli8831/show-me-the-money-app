@@ -1,3 +1,15 @@
+/**
+ * 首頁組件 (Index/Home Page)
+ * 
+ * 功能：
+ * 1. 使用 React Query 從 GitHub API 獲取資料
+ * 2. 顯示載入狀態和錯誤處理
+ * 3. 展示獲取到的倉庫資訊
+ * 4. 使用 NavigationWrapper 包裹，自動顯示底部導航欄（移動設備）
+ * 
+ * 路由：/(tabs) 或 /
+ */
+
 import NavigationWrapper from "@/app/(components)/navigation-wrapper";
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -6,6 +18,7 @@ import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
 
 export default function Index() {
+
     const { t, i18n } = useTranslation();
 
     // const fetchTrip = async ({ queryKey }: { queryKey: any }) => {
@@ -57,7 +70,7 @@ export default function Index() {
 
                 <Text>{t('loading')}</Text>
                 <Text className="text-center mb-4">
-                    Trip: 
+                    Trip:
                 </Text>
 
                 <View className="flex-row flex-wrap gap-4 justify-center">
