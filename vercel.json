@@ -1,7 +1,7 @@
 {
   "buildCommand": "pnpm expo export --platform web --max-workers 1",
   "outputDirectory": "dist",
-  "devCommand": "pnpm expo start --web",
+  "devCommand": "npx expo start --https",
   "cleanUrls": true,
   "framework": null,
   "rewrites": [
