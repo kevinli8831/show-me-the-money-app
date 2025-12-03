@@ -30,10 +30,12 @@ export default function BottomTabBar() {
 
   // 導航項配置：定義底部導航欄的所有標籤頁
   const NAV_ITEMS = [
-    { label: 'home', isActive: true, route: '/(tabs)', icon: Home },      // 首頁
-    { label: 'trip', isActive: true, route: '/(tabs)/trip', icon: MapPin },  // 行程頁
-    { label: 'login', isActive: !user, route: '/(tabs)/login', icon: LogIn }, // 登入頁
-    { label: 'profile', isActive: !!user, route: '/(tabs)/profile', icon: user?.avatarUrl || User }, // profile 頁
+    { label: 'home', route: '/(tabs)', icon: Home },
+    { label: 'trip', route: '/(tabs)/trip', icon: MapPin },
+    // 根據登入狀態動態切換標籤頁
+    user
+      ? { label: 'profile', route: '/(tabs)/profile', icon: user.avatarUrl || User }
+      : { label: 'login', route: '/(tabs)/login', icon: LogIn },
   ];
   /**
    * 處理標籤頁點擊事件
@@ -45,112 +47,64 @@ export default function BottomTabBar() {
 
   return (
     <View
-      className={`dark:bg-[#171717] bg-[#ffffff] dark:border-[#333] border-[#e5e7eb]`}
-      style={[
-        styles.container,
-      ]}>
+      className="flex-row border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-[#171717]"
+      style={{
+        paddingBottom: Platform.OS === 'ios' ? 20 : 12,
+        paddingTop: 12,
+        minHeight: 70,
+      }}
+    >
       {NAV_ITEMS.map((item) => {
         // 檢查當前路徑是否匹配該導航項的路由，用於判斷啟動狀態
-        const isActive = pathname === item.route;
-        
-        // 根據啟動狀態和主題設置圖示顏色
-        // 啟動：藍色（淺色模式 #2563eb，深色模式 #60a5fa）
-        // 未啟動：灰色（淺色模式 #6b7280，深色模式 #9ca3af）
-
-        // 獲取對應的圖示組件
-        const IconComponent = item.icon;
+        const isActive = pathname === item.route ||
+                        (item.route === '/(tabs)' && pathname === '/');
 
         return (
-          <View key={item.route}>
-          {item.isActive && (
-            <Pressable
-              onPress={() => handleTabPress(item.route)}
-              style={({ pressed }) => [
-                styles.tab,
-                pressed && styles.tabPressed,
-              ]}>
-                {item.label === 'profile' && user?.avatarUrl ? (
-                  <View style={styles.avatarCircle}>
-                    <Image
-                      source={{ uri: user.avatarUrl }}
-                      style={styles.avatarImage}
-                    />
-                  </View>
-                ) : (
-                  <>
-                    <IconComponent
-                      className={`dark:text-[#60a5fa] text-[#2563eb] dark:stroke-[#60a5fa] stroke-[#2563eb]`}
-                      width={24}
-                      height={24}
-                      style={styles.icon}
-                    />
-                  </>
+          <Pressable
+            key={item.route}
+            onPress={() => handleTabPress(item.route)}
+            className="flex-1 items-center justify-center py-2 active:opacity-70"
+          >
+            {/* 頭像或圖示 */}
+            {item.label === 'profile' && user?.avatarUrl ? (
+              <View className="w-7 h-7 rounded-full overflow-hidden mb-1 border-2 border-transparent">
+                <Image
+                  source={{ uri: user.avatarUrl }}
+                  className="w-full h-full"
+                  resizeMode="cover"
+                />
+                {/* 活躍時加藍色邊框 */}
+                {isActive && (
+                  <View className="absolute inset-0 rounded-full border-2 border-blue-500 dark:border-blue-400" />
                 )}
-                <Text
-                  className={`dark:text-[#60a5fa] text-[#2563eb]`}
-                  style={[
-                    styles.label,
-                  ]}>
-                  {t(item.label)}
-                </Text>
-            </Pressable>
-          )}
-          </View>
+              </View>
+            ) : (
+              <item.icon
+                width={26}
+                height={26}
+                strokeWidth={2}
+                stroke={isActive
+                  ? '#2563eb'
+                  : '#6b7280'
+                }
+                className={isActive ? 'dark:stroke-[#60a5fa]' : 'dark:stroke-[#9ca3af]'}
+                style={{ marginBottom: 4 }}
+              />
+            )}
+
+            {/* 文字標籤 */}
+            <Text
+              className={`text-xs font-medium ${
+                isActive
+                  ? 'text-blue-600 dark:text-blue-400'
+                  : 'text-gray-500 dark:text-gray-400'
+              }`}
+            >
+              {t(item.label)}
+            </Text>
+          </Pressable>
         );
       })}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  // 容器樣式：底部導航欄的整體佈局
-  container: {
-    flexDirection: 'row', // 水平排列
-    alignItems: 'center', // 垂直居中
-    justifyContent: 'space-around', // 均勻分佈
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderTopWidth: 1, // 頂部邊框，分隔內容區域
-    minHeight: 60, // 最小高度
-    ...Platform.select({
-      ios: {
-        // iOS 設備需要額外的底部內邊距，適配安全區域（如 iPhone X 的底部指示器）
-        paddingBottom: 20,
-      },
-    }),
-  },
-  // 單個標籤頁樣式
-  tab: {
-    flex: 1, // 平均分配空間
-    alignItems: 'center', // 內容置中對齊
-    justifyContent: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-  },
-  // 按下時的樣式
-  tabPressed: {
-    opacity: 0.7, // 降低透明度，提供視覺回饋
-  },
-  // 圖示樣式
-  icon: {
-    marginBottom: 4, // 圖示與文字之間的間距
-  },
-  // 標籤文字樣式
-  label: {
-    fontSize: 12,
-    fontWeight: '500', // 中等粗細
-  },
-  avatarCircle: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    overflow: 'hidden',
-    marginBottom: 4,
-  },
-  avatarImage: {
-    width: 24,
-    height: 24,
-  },
-});
-

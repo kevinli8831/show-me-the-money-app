@@ -16,31 +16,27 @@
  */
 
 import React from 'react';
-import { View, useWindowDimensions } from 'react-native';
+import { View } from 'react-native';
 import BottomTabBar from '@/app/components/bottom-tab-bar';
-import breakpoints from '@/app/constants/breakpoints';
 
 interface NavigationWrapperProps {
   children: React.ReactNode;
 }
 
 export default function NavigationWrapper({ children }: NavigationWrapperProps) {
-  // 檢測當前執行平台是否為 Web
-  const { width } = useWindowDimensions();
-  const isWeb = width > breakpoints.sm;
-
-  if (isWeb) {
-    // Web 平台：頂部導航欄由 Stack 的 header 處理，這裡只渲染子內容
-    return <>{children}</>;
-  }
 
   // 移動設備：顯示底部導航欄
   // 使用 flex: 1 確保內容區域和導航欄正確佈局
   return (
-    <View style={{ flex: 1 }}>
-      {children}
-      <BottomTabBar />
-    </View>
+    <>
+      <View className="hidden sm:flex flex-1">
+        {children}
+      </View>
+      <View className="flex-1 sm:hidden">
+        {children}
+        <BottomTabBar />
+      </View>
+    </>
   );
 }
 

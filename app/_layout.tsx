@@ -20,6 +20,8 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { Stack } from "expo-router";
+import React from 'react';
+import { View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
 import { Platform, useWindowDimensions } from 'react-native';
@@ -32,23 +34,20 @@ const queryClient = new QueryClient()
 
 
 export default function RootLayout() {
-  // 檢測當前執行平台是否為 Web
-  const { width } = useWindowDimensions();
-  const isWeb = width > breakpoints.sm;
 
   // 檢查係咪喺 OAuth popup window 入面,如果係就自動 close
   useEffect(() => {
     if (Platform.OS === 'web') {
       const urlParams = new URLSearchParams(window.location.search);
       const hasAuthParams = urlParams.has('code') || urlParams.has('state');
-      
+
       // 如果有 auth params 而且係 popup window (opener 存在)
       if (hasAuthParams && window.opener) {
         setTimeout(() => {
           window.close();
         }, 1500);
       }
-      
+
     }
   }, []);
 
@@ -58,11 +57,13 @@ export default function RootLayout() {
       <AuthProvider>
         <Stack
           screenOptions={{
-            // 僅在 Web 平台顯示頂部導航欄
-            headerShown: isWeb,
             // 在 Web 平台使用自訂的 TopUpBar 組件作為 header
             // 移動設備不顯示 header，因為使用底部導航欄
-            header: isWeb ? () => <TopUpBar /> : undefined,
+            header: () => (
+              <View className={`hidden sm:flex`}>
+                <TopUpBar />
+              </View>
+            ),
           }}
         />
         <PortalHost />
