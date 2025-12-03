@@ -5,8 +5,8 @@ import { useMutation } from '@tanstack/react-query';
 import * as AuthSession from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
-import React, { useEffect } from 'react';
-import { Alert, Image, Platform, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import React from 'react';
+import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -14,25 +14,6 @@ export default function Login() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const { login } = useAuth();
-
-  // 檢查係咪喺 OAuth popup window 入面
-  // 如果係,就自動 close 個 window
-  useEffect(() => {
-    if (Platform.OS === 'web') {
-      // 檢查 URL 有冇 OAuth callback 參數 (code, state 等)
-      const urlParams = new URLSearchParams(window.location.search);
-      const hasAuthParams = urlParams.has('code') || urlParams.has('state');
-      
-      // 如果有 auth params 而且係 popup window (opener 存在)
-      if (hasAuthParams && window.opener) {
-        console.log('Detected OAuth popup, will close after auth completes');
-        // 等 auth flow 完成後 close (短暫延遲確保 token 已經傳咗去 parent window)
-        setTimeout(() => {
-          window.close();
-        }, 1000);
-      }
-    }
-  }, []);
   
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: GOOGLE_CLIENT_ID,
