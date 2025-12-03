@@ -1,5 +1,5 @@
+import { useAuthStore } from '@/app/store/useAuthStore';
 import NavigationWrapper from '@/app/components/navigation-wrapper';
-import { useAuth } from '@/app/hooks/useAuth';
 import { API_BASE_URL, GOOGLE_CLIENT_ID } from '@/lib/config';
 import { useMutation } from '@tanstack/react-query';
 import * as AuthSession from 'expo-auth-session';
@@ -13,8 +13,8 @@ WebBrowser.maybeCompleteAuthSession();
 export default function Login() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const { login } = useAuth();
-
+  const loginToStore = useAuthStore((state) => state.login);
+  
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: GOOGLE_CLIENT_ID,
     responseType: 'code',
@@ -51,8 +51,15 @@ export default function Login() {
     onSuccess: (data) => {
       Alert.alert('Login success', 'Welcome back!');
       console.log('Login success:', data);
-      login({
-        user: data.user,
+
+      const user = {
+        id: data.user.id,
+        avatarUrl: data.user.avatarUrl,
+        refreshToken: data.refreshToken,
+      }
+
+      loginToStore({
+        user: user,
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
       })

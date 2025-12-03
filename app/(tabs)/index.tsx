@@ -11,8 +11,6 @@
  */
 
 import NavigationWrapper from "@/app/(components)/navigation-wrapper";
-import { useQuery } from '@tanstack/react-query';
-import { useBear } from '../_layout';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from "react-native";
@@ -20,7 +18,6 @@ import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
 
 export default function Index() {
-    const bears = useBear((state:any) => state.bears)
 
     const { t, i18n } = useTranslation();
 
@@ -70,7 +67,6 @@ export default function Index() {
         <NavigationWrapper>
             <View className="flex-1 bg-white dark:bg-background items-center justify-center gap-4 p-4">
                 <Text variant="h1" className="mb-4">NativeWind v4 + Reusables</Text>
-                <h1>{bears} bears around here...</h1>
 
                 <Text>{t('loading')}</Text>
                 <Text className="text-center mb-4">

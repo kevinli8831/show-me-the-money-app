@@ -8,10 +8,8 @@
  *    - Web: 顯示頂部導航欄 (TopUpBar)
  *    - 移動設備: 不顯示頂部導航欄（使用底部導航欄）
  */
-
+import { useAuthStore } from "@/app/store/useAuthStore";
 import TopUpBar from "@/app/components/top-up-bar";
-import breakpoints from '@/app/constants/breakpoints';
-import AuthProvider from '@/app/hooks/useAuth';
 import "@/global.css";
 import '@/i18n';
 import { PortalHost } from '@rn-primitives/portal';
@@ -49,10 +47,18 @@ export default function RootLayout() {
     }
   }, []);
 
+  const isHydrated = useAuthStore.persist.hasHydrated();
+  if (!isHydrated) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <p>Loading...</p>
+      </View>
+    )
+  }
+
   return (
     // 提供 React Query 上下文，使所有子組件可以使用 useQuery 等 hooks
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
         <Stack
           screenOptions={{
             // 在 Web 平台使用自訂的 TopUpBar 組件作為 header
@@ -65,7 +71,6 @@ export default function RootLayout() {
           }}
         />
         <PortalHost />
-      </AuthProvider>
     </QueryClientProvider>
   );
 }

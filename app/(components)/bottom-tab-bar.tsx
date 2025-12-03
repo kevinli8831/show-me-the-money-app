@@ -11,12 +11,12 @@
  * 
  * 使用場景：僅在移動設備（iOS/Android）使用
  */
+import { useAuthStore as useAuth } from '@/app/(store)/useAuthStore';
 import { usePathname, useRouter } from 'expo-router';
 import React from 'react';
-import { Platform, Pressable, StyleSheet, Text, View, Image } from 'react-native';
-import { Home, LogIn, MapPin, User } from 'react-native-feather';
-import { useAuth } from '@/app/hooks/useAuth';
 import { useTranslation } from 'react-i18next';
+import { Image, Platform, Pressable, Text, View } from 'react-native';
+import { Home, LogIn, MapPin, User } from 'react-native-feather';
 
 export default function BottomTabBar() {
   // 獲取路由導航器，用於頁面跳轉
