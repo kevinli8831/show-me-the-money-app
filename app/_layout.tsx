@@ -27,8 +27,7 @@ import { Platform, View } from 'react-native';
 WebBrowser.maybeCompleteAuthSession();
 
 // 建立 React Query 客戶端實例，用於管理伺服器狀態和快取
-const queryClient = new QueryClient()
-
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const { user, hydrateFromRefreshToken } = useAuthStore();
@@ -94,7 +93,11 @@ export default function RootLayout() {
               </View>
             ),
           }}
-        />
+        >
+          <Stack.Screen name="(tabs)/index" options={{ title: 'Home', animation: 'slide_from_right' }} />
+          <Stack.Screen name="(tabs)/trip" options={{ title: 'Trip', animation: 'slide_from_right' }} />
+          <Stack.Screen name="(tabs)/login" options={{ title: 'Login', animation: 'slide_from_right' }} />
+        </Stack>
         <PortalHost />
     </QueryClientProvider>
   );

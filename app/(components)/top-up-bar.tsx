@@ -12,10 +12,25 @@
  * 使用場景：僅在 Web 平台使用，作為 Stack 的 header
  */
 import { useAuthStore as useAuth } from '@/app/(store)/useAuthStore';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useRouter } from 'expo-router';
-import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
 import { Animated, Image, Pressable, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
+// 語言配置：定義所有可用的語言選項
+const LANGUAGES = [
+  { code: 'en', label: 'English' },
+  { code: 'zh-HK', label: '繁體中文' },
+];
 
 export default function TopUpBar() {
   // 獲取路由導航器，用於頁面跳轉
@@ -27,7 +42,17 @@ export default function TopUpBar() {
   // 下拉選單的動畫值，用於淡入淡出和滑動效果
   const [dropdownAnim] = useState(new Animated.Value(0));
 
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+
+  /**
+   * 處理語言切換
+   * @param language - 目標語言代碼
+   */
+  const handleLanguageChange = (language: string) => {
+    i18n.changeLanguage(language);
+    setCurrentLanguage(language);
+  };
 
   const { user } = useAuth();
 
@@ -207,6 +232,26 @@ export default function TopUpBar() {
                   )}
             </Pressable>
           ))}
+          <DropdownMenu className='px-[16px] py-[8px]'>
+            <DropdownMenuTrigger>
+              <Text className='font-[500] text-[#1f2937] dark:text-white'>
+                {LANGUAGES.map(lang => lang.code === currentLanguage ? lang.label : null).join('')}
+              </Text>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>
+                <Text>{t('language')}</Text>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup value={currentLanguage} onValueChange={handleLanguageChange}>
+                {LANGUAGES.map((lang) => (
+                  <DropdownMenuRadioItem key={lang.code} value={lang.code}>
+                    <Text>{lang.label}</Text>
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </View>
       {/* )} */}
     </View>
