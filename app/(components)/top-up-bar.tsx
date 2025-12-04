@@ -21,15 +21,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
-import { Animated, Image, Pressable, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Animated, Image, Pressable, Text, View } from 'react-native';
+
+// 靜態 icon 映射（require 必須使用靜態字串）
+const LANGUAGE_ICONS: Record<string, any> = {
+  'english_icon': require('../../assets/images/united-kingdom.png'),
+  'zh-HK_icon': require('../../assets/images/hong-kong.png'),
+};
 
 // 語言配置：定義所有可用的語言選項
 const LANGUAGES = [
-  { code: 'en', label: 'English' },
-  { code: 'zh-HK', label: '繁體中文' },
+  { code: 'en', label: 'English', iconKey: 'english_icon' },
+  { code: 'zh-HK', label: '繁體中文', iconKey: 'zh-HK_icon' },
 ];
 
 export default function TopUpBar() {
@@ -44,14 +51,47 @@ export default function TopUpBar() {
 
   const { t, i18n } = useTranslation();
   const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+  const [currentIconKey, setCurrentIconKey] = useState<string>('english_icon');
+
+  // 從 AsyncStorage 讀取儲存的 icon
+  useEffect(() => {
+    const loadIconFromStorage = async () => {
+      try {
+        const savedIconKey = await AsyncStorage.getItem('settings.lang.icon');
+        if (savedIconKey && LANGUAGE_ICONS[savedIconKey]) {
+          setCurrentIconKey(savedIconKey);
+        } else {
+          // 根據當前語言設置預設 icon
+          const currentLang = LANGUAGES.find(l => l.code === i18n.language);
+          if (currentLang) {
+            setCurrentIconKey(currentLang.iconKey);
+          }
+        }
+      } catch (error) {
+        console.log('Error loading icon', error);
+      }
+    };
+    loadIconFromStorage();
+  }, []);
 
   /**
    * 處理語言切換
    * @param language - 目標語言代碼
    */
-  const handleLanguageChange = (language: string) => {
+  const handleLanguageChange = async (language: string) => {
     i18n.changeLanguage(language);
     setCurrentLanguage(language);
+    
+    // 從 LANGUAGES 找到對應的 iconKey 並儲存
+    const selectedLang = LANGUAGES.find(l => l.code === language);
+    if (selectedLang) {
+      setCurrentIconKey(selectedLang.iconKey);
+      try {
+        await AsyncStorage.setItem('settings.lang.icon', selectedLang.iconKey);
+      } catch (error) {
+        console.log('Error saving icon', error);
+      }
+    }
   };
 
   const { user } = useAuth();
@@ -232,27 +272,36 @@ export default function TopUpBar() {
                   )}
             </Pressable>
           ))}
-          <DropdownMenu className='px-[16px] py-[8px]'>
-            <DropdownMenuTrigger>
-              <Text className='font-[500] text-[#1f2937] dark:text-white'>
-                {LANGUAGES.map(lang => lang.code === currentLanguage ? lang.label : null).join('')}
-              </Text>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuLabel>
-                <Text>{t('language')}</Text>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup value={currentLanguage} onValueChange={handleLanguageChange}>
-                {LANGUAGES.map((lang) => (
-                  <DropdownMenuRadioItem key={lang.code} value={lang.code}>
-                    <Text>{lang.label}</Text>
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </View>
+            <DropdownMenu className='px-3 py-2'>
+              <DropdownMenuTrigger>
+                {LANGUAGE_ICONS[currentIconKey] && (
+                  <Image
+                    source={LANGUAGE_ICONS[currentIconKey]}
+                    style={[{ width: 28, height: 20, marginRight: 8, resizeMode: 'cover', borderRadius: 6, borderColor: '#f3f4f6'}]}
+                  />
+                )}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>
+                  <Text>{t('language')}</Text>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup value={currentLanguage} onValueChange={handleLanguageChange}>
+                  {LANGUAGES.map((lang) => (
+                    <DropdownMenuRadioItem key={lang.code} value={lang.code}>
+                      {LANGUAGE_ICONS[lang.iconKey] && (
+                        <Image
+                          source={LANGUAGE_ICONS[lang.iconKey]}
+                          style={[{ width: 28, height: 20, marginRight: 8, resizeMode: 'cover' }]}
+                        />
+                      )}
+                      <Text>{lang.label}</Text>
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </View>
       {/* )} */}
     </View>
   );
