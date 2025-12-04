@@ -8,6 +8,7 @@
  *    - Web: 顯示頂部導航欄 (TopUpBar)
  *    - 移動設備: 不顯示頂部導航欄（使用底部導航欄）
  */
+import { SplashScreen } from 'expo-router';
 import { useAuthStore } from "@/app/store/useAuthStore";
 import TopUpBar from "@/app/components/top-up-bar";
 import "@/global.css";
@@ -20,7 +21,7 @@ import {
 import { Stack } from "expo-router";
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
-import { Platform, useWindowDimensions, View } from 'react-native';
+import { Platform, View } from 'react-native';
 
 // 處理 OAuth callback - 必須喺 component 外面 call
 WebBrowser.maybeCompleteAuthSession();
@@ -30,6 +31,7 @@ const queryClient = new QueryClient()
 
 
 export default function RootLayout() {
+  const { user, hydrateFromRefreshToken } = useAuthStore();
 
   // 檢查係咪喺 OAuth popup window 入面,如果係就自動 close
   useEffect(() => {
@@ -45,6 +47,29 @@ export default function RootLayout() {
       }
 
     }
+
+    let cancelled = false;
+
+    const tryRefresh = async () => {
+      console.log("hydrateFromRefreshToken")
+      try {
+        await hydrateFromRefreshToken();  // 自動去 SecureStore 拿 refreshToken 換新 accessToken
+        if (!cancelled) {
+          SplashScreen.hideAsync();       // 成功或失敗都隱藏 splash
+        }
+      } catch (error) {
+        console.warn('Auto refresh failed', error);
+        if (!cancelled) {
+          SplashScreen.hideAsync();
+        }
+      }
+    };
+
+    tryRefresh();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const isHydrated = useAuthStore.persist.hasHydrated();

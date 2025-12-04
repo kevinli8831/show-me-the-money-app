@@ -2,8 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const KEY = 'refreshToken';
 
-// Custom storage that EXCLUDES refreshToken from AsyncStorage
-export const asyncStorageWithoutRefreshToken = {
+// Custom storage from AsyncStorage
+export const asyncStorage = {
   getItem: async (name: string) => {
     const value = await AsyncStorage.getItem(name);
     if (!value) return value;

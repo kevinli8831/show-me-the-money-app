@@ -1,4 +1,5 @@
-import { asyncStorageWithoutRefreshToken } from '@/app/lib/auth-storage';
+import { asyncStorage } from '@/app/lib/auth-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '@/app/types/user';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
@@ -13,6 +14,7 @@ interface AuthState {
   login: (data: { user: User; accessToken: string; refreshToken: string }) => Promise<void>;
   logout: () => Promise<void>;
   updateAccessToken: (accessToken: string) => void;
+  hydrateFromRefreshToken: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -41,14 +43,46 @@ export const useAuthStore = create<AuthState>()(
         });
       },
 
+      // App 啟動時自動嘗試 refresh
+      hydrateFromRefreshToken: async () => {
+        console.log(AsyncStorage.getAllKeys())
+        const storedData = await AsyncStorage.getItem('refreshToken');
+        console.log(storedData)
+        const storedRefreshToken = storedData
+        if (!storedRefreshToken) return;
+
+        try {
+          const res = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL}/auth/refresh`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refreshToken: storedRefreshToken }),
+          });
+
+          if (!res.ok) throw new Error('Refresh failed');
+
+          const data = await res.json();
+          set({ user: data.user, accessToken: data.accessToken });
+
+          // 如果後端有回新 refreshToken，也存起來
+          if (data.refreshToken) {
+            await AsyncStorage.setItem('refreshToken', data.refreshToken);
+          }
+        } catch (error) {
+          console.warn('Token refresh failed, clearing storage', error);
+          await AsyncStorage.clear();
+          set({ user: null, accessToken: null });
+        }
+      },
+
       updateAccessToken: (accessToken) =>
         set({ accessToken, isAuthenticated: true }),
     }),
     {
       name: 'auth-storage', // Key in AsyncStorage
-      storage: createJSONStorage(() => asyncStorageWithoutRefreshToken),
+      storage: createJSONStorage(() => asyncStorage),
       partialize: (state) => ({
         user: state.user,
+        refreshToken: state.refreshToken,
         isAuthenticated: state.isAuthenticated,
       }),
     }
