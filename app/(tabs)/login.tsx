@@ -1,5 +1,5 @@
-import { useAuthStore } from '@/app/store/useAuthStore';
 import NavigationWrapper from '@/app/components/navigation-wrapper';
+import { useAuthStore } from '@/app/store/useAuthStore';
 import { API_BASE_URL, GOOGLE_CLIENT_ID } from '@/lib/config';
 import { useMutation } from '@tanstack/react-query';
 import * as AuthSession from 'expo-auth-session';
@@ -7,6 +7,7 @@ import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { IApiResponse } from '../interfaces';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -14,12 +15,12 @@ export default function Login() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
   const loginToStore = useAuthStore((state) => state.login);
-  
+
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: GOOGLE_CLIENT_ID,
     responseType: 'code',
     usePKCE: true,
-    shouldAutoExchangeCode:false,
+    shouldAutoExchangeCode: false,
     redirectUri: AuthSession.makeRedirectUri({ scheme: 'showmethemoney' }),
     scopes: ['profile', 'email'],
   });
@@ -48,7 +49,7 @@ export default function Login() {
       return res.json();
     },
 
-    onSuccess: (data) => {
+    onSuccess: ({ data, success, error, meta, message }: IApiResponse<any>) => {
       Alert.alert('Login success', 'Welcome back!');
       console.log('Login success:', data);
 
