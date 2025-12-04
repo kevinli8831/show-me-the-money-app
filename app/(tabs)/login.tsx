@@ -1,28 +1,37 @@
 import NavigationWrapper from '@/app/components/navigation-wrapper';
-import { useAuth } from '@/app/hooks/useAuth';
+import { useAuthStore } from '@/app/store/useAuthStore';
 import { API_BASE_URL, GOOGLE_CLIENT_ID } from '@/lib/config';
 import { useMutation } from '@tanstack/react-query';
 import * as AuthSession from 'expo-auth-session';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, useColorScheme, View } from 'react-native';
+import { IApiResponse } from '../interfaces';
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function Login() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
-  const { login } = useAuth();
-  
+  const loginToStore = useAuthStore((state) => state.login);
+
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId: GOOGLE_CLIENT_ID,
     responseType: 'code',
     usePKCE: true,
-    shouldAutoExchangeCode:false,
+    shouldAutoExchangeCode: false,
     redirectUri: AuthSession.makeRedirectUri({ scheme: 'showmethemoney' }),
     scopes: ['profile', 'email'],
   });
+
+  // Debug: 睇吓實際用緊咩 redirect URI
+  useEffect(() => {
+    if (request) {
+      console.log('Redirect URI:', request.redirectUri);
+      console.log('Full request:', request);
+    }
+  }, [request]);
 
   // 用 useMutation 封裝「把 idToken 送去後端」的邏輯
   const mutation = useMutation({
@@ -40,11 +49,18 @@ export default function Login() {
       return res.json();
     },
 
-    onSuccess: (data) => {
+    onSuccess: ({ data, success, error, meta, message }: IApiResponse<any>) => {
       Alert.alert('Login success', 'Welcome back!');
       console.log('Login success:', data);
-      login({
-        user: data.user,
+
+      const user = {
+        id: data.user.id,
+        avatarUrl: data.user.avatarUrl,
+        refreshToken: data.refreshToken,
+      }
+
+      loginToStore({
+        user: user,
         accessToken: data.accessToken,
         refreshToken: data.refreshToken,
       })

@@ -26,5 +26,3 @@ export const breakpoints = {
   lg: 1240,   // 大螢幕：>= 1240px（小桌面顯示器）
   xl: 1440,   // 超大螢幕：>= 1440px（大桌面顯示器）
 };
-
-export const isPlatformWeb = Platform.OS === 'web';

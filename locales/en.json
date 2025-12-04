@@ -1,7 +1,8 @@
 {
+  "analysis": "Analysis",
   "welcome": "Welcome back!",
   "home": "Home",
-  "trip": "Trip",
+  "notice": "Notice",
   "login": "Login",
   "language": "Language",
   "profile": "Profile",
