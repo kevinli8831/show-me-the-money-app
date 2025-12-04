@@ -15,8 +15,8 @@ import { useAuthStore as useAuth } from '@/app/(store)/useAuthStore';
 import { usePathname, useRouter } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Platform, Pressable, Text, View } from 'react-native';
-import { Home, LogIn, MapPin, User } from 'react-native-feather';
+import { Image, Platform, Pressable, Text, View, TouchableOpacity } from 'react-native';
+import { Bell, Home, LogIn, Plus, User, BarChart } from 'react-native-feather';
 
 export default function BottomTabBar() {
   // 獲取路由導航器，用於頁面跳轉
@@ -29,14 +29,23 @@ export default function BottomTabBar() {
   const { user } = useAuth();
 
   // 導航項配置：定義底部導航欄的所有標籤頁
-  const NAV_ITEMS = [
+  const NAV_ITEMS_LEFT = [
     { label: 'home', route: '/(tabs)', icon: Home },
-    { label: 'trip', route: '/(tabs)/trip', icon: MapPin },
+    { label: 'analysis', route: '/(tabs)/analysis', icon: BarChart },
+  ];
+
+  const NAV_ITEMS_RIGHT = [
+    { label: 'notice', route: '/(tabs)notice', icon: Bell},
     // 根據登入狀態動態切換標籤頁
     user
       ? { label: 'profile', route: '/(tabs)/profile', icon: user.avatarUrl || User }
       : { label: 'login', route: '/(tabs)/login', icon: LogIn },
   ];
+
+  const handleCreateActivity = () => {
+    // 改成你實際的新建活動頁面路由
+    router.push('/(tabs)');
+  };
   /**
    * 處理標籤頁點擊事件
    * @param route - 目標路由路徑
@@ -51,14 +60,64 @@ export default function BottomTabBar() {
       style={{
         paddingBottom: Platform.OS === 'ios' ? 20 : 12,
         paddingTop: 12,
-        minHeight: 70,
+        minHeight: 80,
       }}
     >
-      {NAV_ITEMS.map((item) => {
+      {NAV_ITEMS_LEFT.map((item) => {
         // 檢查當前路徑是否匹配該導航項的路由，用於判斷啟動狀態
         const isActive = pathname === item.route ||
                         (item.route === '/(tabs)' && pathname === '/');
 
+        return (
+          <Pressable
+            key={item.route}
+            onPress={() => handleTabPress(item.route)}
+            className="flex-1 items-center justify-center py-2 active:opacity-70"
+          >
+          <item.icon
+            width={26}
+            height={26}
+            strokeWidth={2}
+            stroke={isActive
+              ? '#2563eb'
+              : '#6b7280'
+            }
+            className={isActive ? 'dark:stroke-[#60a5fa]' : 'dark:stroke-[#9ca3af]'}
+            style={{ marginBottom: 4 }}
+          />
+          {/* 文字標籤 */}
+          <Text
+            className={`text-xs font-medium ${
+              isActive
+                ? 'text-blue-600 dark:text-blue-400'
+                : 'text-gray-500 dark:text-gray-400'
+            }`}
+          >
+              {t(item.label)}
+            </Text>
+          </Pressable>
+        );
+      })}
+      <View className="items-center justify-center -mt-6">
+        <TouchableOpacity
+          onPress={handleCreateActivity}
+          activeOpacity={0.8}
+          className="w-16 h-16 bg-blue-600 rounded-full items-center justify-center shadow-lg shadow-black/30"
+          style={{
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.3,
+            shadowRadius: 8,
+            elevation: 10,
+          }}
+        >
+          <Plus stroke="white" width={32} height={32} strokeWidth={3} />
+        </TouchableOpacity>
+      </View>
+      {NAV_ITEMS_RIGHT.map((item) => {
+        // 檢查當前路徑是否匹配該導航項的路由，用於判斷啟動狀態
+        const isActive = pathname === item.route ||
+                  (item.route === '/(tabs)' && pathname === '/');
         return (
           <Pressable
             key={item.route}
