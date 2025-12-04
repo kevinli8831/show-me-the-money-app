@@ -11,18 +11,11 @@
  * 
  * 使用場景：僅在 Web 平台使用，作為 Stack 的 header
  */
-
+import { useAuthStore as useAuth } from '@/app/(store)/useAuthStore';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import React, { useState } from 'react';
 import { Animated, Image, Pressable, Text, View } from 'react-native';
-
-// 導航項配置：定義所有可用的導航連結
-const NAV_ITEMS = [
-  { label: 'home', route: '/(tabs)' },
-  { label: 'trip', route: '/(tabs)/trip' },
-  { label: 'login', route: '/(tabs)/login' },
-];
 
 export default function TopUpBar() {
   // 獲取路由導航器，用於頁面跳轉
@@ -35,6 +28,19 @@ export default function TopUpBar() {
   const [dropdownAnim] = useState(new Animated.Value(0));
 
   const { t } = useTranslation();
+
+  const { user } = useAuth();
+
+  // 導航項配置：定義所有可用的導航連結
+  const NAV_ITEMS = [
+    { label: 'home', route: '/(tabs)' },
+    { label: 'analysis', route: '/(tabs)/analysis' },
+    { label: 'notice', route: '/(tabs)/notice' },
+    // 根據登入狀態動態切換標籤頁
+    user
+      ? { label: 'profile', route: '/(tabs)/profile'}
+      : { label: 'login', route: '/(tabs)/login'},
+  ];
 
   /**
    * 切換選單顯示/隱藏狀態
@@ -178,15 +184,27 @@ export default function TopUpBar() {
               key={item.route}
               onPress={() => handleNavItemPress(item.route)}
             >
-              <Text 
-                className={`dark:text-[#244444] text-[#1f2937]`}
-                style={{
-                  fontSize: 16,
-                  fontWeight: '500',
-                }}
-              >
-                {t(item.label)}
-              </Text>
+              {item.label === 'profile' && user?.avatarUrl ?(
+                <View className="w-7 h-7 rounded-full overflow-hidden mb-1 border-2 border-transparent">
+                  <Image
+                    source={{ uri: user.avatarUrl }}
+                    className="w-full h-full"
+                    resizeMode="cover"
+                  />
+                  <View className="absolute inset-0 rounded-full border-2 border-blue-500 dark:border-blue-400" />
+
+                </View>
+              ) : (
+                  <Text
+                    className={`dark:text-[#244444] text-[#1f2937]`}
+                    style={{
+                      fontSize: 16,
+                      fontWeight: '500',
+                    }}
+                  >
+                    {t(item.label)}
+                  </Text>
+                  )}
             </Pressable>
           ))}
         </View>
