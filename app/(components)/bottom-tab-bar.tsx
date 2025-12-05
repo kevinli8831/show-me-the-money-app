@@ -15,8 +15,9 @@ import { useAuthStore as useAuth } from '@/app/(store)/useAuthStore';
 import { usePathname, useRouter } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Platform, Pressable, Text, View, TouchableOpacity } from 'react-native';
+import { Platform, Pressable, Text, View, TouchableOpacity } from 'react-native';
 import { Bell, Home, LogIn, Plus, User, BarChart } from 'react-native-feather';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export default function BottomTabBar() {
   // 獲取路由導航器，用於頁面跳轉
@@ -127,15 +128,13 @@ export default function BottomTabBar() {
             {/* 頭像或圖示 */}
             {item.label === 'profile' && user?.avatarUrl ? (
               <View className="w-7 h-7 rounded-full overflow-hidden mb-1 border-2 border-transparent">
-                <Image
-                  source={{ uri: user.avatarUrl }}
-                  className="w-full h-full"
-                  resizeMode="cover"
-                />
-                {/* 活躍時加藍色邊框 */}
-                {isActive && (
-                  <View className="absolute inset-0 rounded-full border-2 border-blue-500 dark:border-blue-400" />
-                )}
+                <Avatar
+                  alt="@googleIcon"
+                  className="border-background web:border-0 web:ring-2 web:ring-background border-2 w-full h-full">
+                  <AvatarImage source={{ uri: user.avatarUrl }} />
+                  <AvatarFallback>
+                  </AvatarFallback>
+                </Avatar>
               </View>
             ) : (
               <item.icon

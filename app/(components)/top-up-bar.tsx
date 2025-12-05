@@ -25,6 +25,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Animated, Image, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // 語言配置：定義所有可用的語言選項
 const LANGUAGES = [
@@ -211,13 +212,13 @@ export default function TopUpBar() {
             >
               {item.label === 'profile' && user?.avatarUrl ?(
                 <View className="w-7 h-7 rounded-full overflow-hidden mb-1 border-2 border-transparent">
-                  <Image
-                    source={{ uri: user.avatarUrl }}
-                    className="w-full h-full"
-                    resizeMode="cover"
-                  />
-                  <View className="absolute inset-0 rounded-full border-2 border-blue-500 dark:border-blue-400" />
-
+                  <Avatar
+                    alt="@googleIcon"
+                    className="border-background web:border-0 web:ring-2 web:ring-background border-2 w-full h-full">
+                    <AvatarImage source={{ uri: user.avatarUrl }} />
+                    <AvatarFallback>
+                    </AvatarFallback>
+                  </Avatar>
                 </View>
               ) : (
                   <Text
