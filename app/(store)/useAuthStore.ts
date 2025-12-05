@@ -45,9 +45,7 @@ export const useAuthStore = create<AuthState>()(
 
       // App 啟動時自動嘗試 refresh
       hydrateFromRefreshToken: async () => {
-        console.log(AsyncStorage.getAllKeys())
         const storedData = await AsyncStorage.getItem('refreshToken');
-        console.log(storedData)
         const storedRefreshToken = storedData
         if (!storedRefreshToken) return;
 
@@ -60,7 +58,8 @@ export const useAuthStore = create<AuthState>()(
 
           if (!res.ok) throw new Error('Refresh failed');
 
-          const data = await res.json();
+          const responseData = await res.json();
+          const data = responseData?.data;
           set({ user: data.user, accessToken: data.accessToken });
 
           // 如果後端有回新 refreshToken，也存起來

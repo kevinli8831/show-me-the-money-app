@@ -50,7 +50,6 @@ export default function RootLayout() {
     let cancelled = false;
 
     const tryRefresh = async () => {
-      console.log("hydrateFromRefreshToken")
       try {
         await hydrateFromRefreshToken();  // 自動去 SecureStore 拿 refreshToken 換新 accessToken
         if (!cancelled) {
