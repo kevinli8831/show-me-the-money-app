@@ -8,5 +8,7 @@
   "profile": "Profile",
   "trip_detail": "Trip Details",
   "start_date": "Start Date",
-  "loading": "Loading..."
+  "loading": "Loading...",
+  "manageAccount": "Manage Account",
+  "logout": "Sign Out"
 }

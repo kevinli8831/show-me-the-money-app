@@ -27,7 +27,7 @@ export default function BottomTabBar() {
 
   const { t } = useTranslation();
 
-  const { user } = useAuth();
+  const { user } = useAuth.getState();
 
   // 導航項配置：定義底部導航欄的所有標籤頁
   const NAV_ITEMS_LEFT = [

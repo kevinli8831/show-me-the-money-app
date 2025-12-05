@@ -55,14 +55,16 @@ export default function Login() {
 
       const user = {
         id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
         avatarUrl: data.user.avatarUrl,
         refreshToken: data.refreshToken,
       }
 
       loginToStore({
         user: user,
-        accessToken: data.accessToken,
         refreshToken: data.refreshToken,
+        accessToken: data.accessToken
       })
     },
 

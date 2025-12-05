@@ -46,28 +46,6 @@ export default function RootLayout() {
       }
 
     }
-
-    let cancelled = false;
-
-    const tryRefresh = async () => {
-      try {
-        await hydrateFromRefreshToken();  // 自動去 SecureStore 拿 refreshToken 換新 accessToken
-        if (!cancelled) {
-          SplashScreen.hideAsync();       // 成功或失敗都隱藏 splash
-        }
-      } catch (error) {
-        console.warn('Auto refresh failed', error);
-        if (!cancelled) {
-          SplashScreen.hideAsync();
-        }
-      }
-    };
-
-    tryRefresh();
-
-    return () => {
-      cancelled = true;
-    };
   }, []);
 
   const isHydrated = useAuthStore.persist.hasHydrated();

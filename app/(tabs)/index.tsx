@@ -11,17 +11,45 @@
  */
 
 import NavigationWrapper from "@/app/(components)/navigation-wrapper";
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from "react-native";
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
 // import { useQuery } from '@tanstack/react-query';
 // import axios from 'axios';
+import { useAuthStore } from "@/app/store/useAuthStore";
+import { SplashScreen } from 'expo-router';
 
 export default function Index() {
 
     const { t, i18n } = useTranslation();
+
+    const { hydrateFromRefreshToken } = useAuthStore();
+
+    let cancelled = false;
+
+    useEffect(() => {
+        const tryRefresh = async () => {
+        try {
+            await hydrateFromRefreshToken();  // 自動去 SecureStore 拿 refreshToken 換新 accessToken
+            if (!cancelled) {
+            SplashScreen.hideAsync();       // 成功或失敗都隱藏 splash
+            }
+        } catch (error) {
+            console.warn('Auto refresh failed', error);
+            if (!cancelled) {
+            SplashScreen.hideAsync();
+            }
+        }
+        };
+
+        tryRefresh();
+
+        return () => {
+        cancelled = true;
+        };
+    }, []);
 
     // const fetchTrip = async ({ queryKey }: { queryKey: any }) => {
     // const [_, id] = queryKey;

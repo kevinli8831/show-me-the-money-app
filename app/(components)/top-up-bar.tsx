@@ -11,7 +11,8 @@
  * 
  * 使用場景：僅在 Web 平台使用，作為 Stack 的 header
  */
-import { useAuthStore as useAuth } from '@/app/(store)/useAuthStore';
+import { useAuthStore as useAuth } from '@/app/store/useAuthStore';
+import { UserMenu } from '@/app/components/user-menu'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +26,6 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Animated, Image, Pressable, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // 語言配置：定義所有可用的語言選項
 const LANGUAGES = [
@@ -55,7 +55,7 @@ export default function TopUpBar() {
     setCurrentLanguage(language);
   };
 
-  const { user } = useAuth();
+  const { user } = useAuth.getState();
 
   // 導航項配置：定義所有可用的導航連結
   const NAV_ITEMS = [
@@ -64,7 +64,7 @@ export default function TopUpBar() {
     { label: 'notice', route: '/(tabs)/notice' },
     // 根據登入狀態動態切換標籤頁
     user
-      ? { label: 'profile', route: '/(tabs)/profile'}
+      ? { label: 'profile', route: ''}
       : { label: 'login', route: '/(tabs)/login'},
   ];
 
@@ -212,13 +212,7 @@ export default function TopUpBar() {
             >
               {item.label === 'profile' && user?.avatarUrl ?(
                 <View className="w-7 h-7 rounded-full overflow-hidden mb-1 border-2 border-transparent">
-                  <Avatar
-                    alt="@googleIcon"
-                    className="border-background web:border-0 web:ring-2 web:ring-background border-2 w-full h-full">
-                    <AvatarImage source={{ uri: user.avatarUrl }} />
-                    <AvatarFallback>
-                    </AvatarFallback>
-                  </Avatar>
+                  <UserMenu />
                 </View>
               ) : (
                   <Text
