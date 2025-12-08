@@ -10,7 +10,6 @@
  * 路由：/(tabs) 或 /
  */
 
-import NavigationWrapper from "@/app/(components)/navigation-wrapper";
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from "react-native";
@@ -66,20 +65,18 @@ export default function Index() {
 
     // 渲染主要內容
     return (
-        <NavigationWrapper>
-            <View className="flex-1 bg-white dark:bg-background items-center justify-center gap-4 p-4">
-                <Text variant="h1" className="mb-4">傍水</Text>
-                <Text className="text-center mb-4">
-                    Trip:
-                </Text>
+        <View className="flex-1 bg-white dark:bg-background items-center justify-center gap-4 p-4">
+            <Text variant="h1" className="mb-4">傍水</Text>
+            <Text className="text-center mb-4">
+                Trip:
+            </Text>
 
-                <View className="flex-row flex-wrap gap-4 justify-center">
-                    <Button onPress={() => console.log('Default pressed')}>
-                        <Text>Create Your Activity</Text>
-                    </Button>
-                </View>
+            <View className="flex-row flex-wrap gap-4 justify-center">
+                <Button onPress={() => console.log('Default pressed')}>
+                    <Text>Create Your Activity aa</Text>
+                </Button>
             </View>
-        </NavigationWrapper>
+        </View>
     );
 }
 

@@ -11,14 +11,16 @@
  * 
  * 使用場景：僅在移動設備（iOS/Android）使用
  */
-import { useAuthStore as useAuth } from '@/app/(store)/useAuthStore';
+import { useAuthStore as useAuth } from '@/app/store/useAuthStore'; // Corrected import path based on file tree
+import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { usePathname, useRouter } from 'expo-router';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Platform, Pressable, Text, View, TouchableOpacity } from 'react-native';
-import { Bell, Home, LogIn, Plus, User, BarChart } from 'react-native-feather';
+import { Image, Platform, Pressable, Text, TouchableOpacity, View } from 'react-native';
+import { BarChart, Bell, Home, LogIn, Plus, User } from 'react-native-feather';
 
-export default function BottomTabBar() {
+// Allow it to receive props, even if we don't fully depend on them yet (we use router/pathname)
+export default function BottomTabBar(props: Partial<BottomTabBarProps>) {
   // 獲取路由導航器，用於頁面跳轉
   const router = useRouter();
   // 獲取當前路徑，用於判斷哪個標籤頁處於啟動狀態
@@ -35,7 +37,7 @@ export default function BottomTabBar() {
   ];
 
   const NAV_ITEMS_RIGHT = [
-    { label: 'notice', route: '/(tabs)notice', icon: Bell},
+    { label: 'notice', route: '/(tabs)/notice', icon: Bell},
     // 根據登入狀態動態切換標籤頁
     user
       ? { label: 'profile', route: '/(tabs)/profile', icon: user.avatarUrl || User }

@@ -1,4 +1,3 @@
-import NavigationWrapper from '@/app/components/navigation-wrapper';
 import { useAuthStore } from '@/app/store/useAuthStore';
 import { API_BASE_URL, GOOGLE_CLIENT_ID } from '@/lib/config';
 import { useMutation } from '@tanstack/react-query';
@@ -95,8 +94,7 @@ export default function Login() {
   };
 
   return (
-    <NavigationWrapper>
-      <ScrollView
+    <ScrollView
         contentContainerStyle={styles.scrollContainer}
         keyboardShouldPersistTaps="handled"
       >
@@ -140,7 +138,6 @@ export default function Login() {
           )}
         </View>
       </ScrollView>
-    </NavigationWrapper>
   );
 }
 

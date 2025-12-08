@@ -8,9 +8,8 @@
  *    - Web: 顯示頂部導航欄 (TopUpBar)
  *    - 移動設備: 不顯示頂部導航欄（使用底部導航欄）
  */
-import { SplashScreen } from 'expo-router';
-import { useAuthStore } from "@/app/store/useAuthStore";
 import TopUpBar from "@/app/components/top-up-bar";
+import { useAuthStore } from "@/app/store/useAuthStore";
 import "@/global.css";
 import '@/i18n';
 import { PortalHost } from '@rn-primitives/portal';
@@ -18,7 +17,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
-import { Stack } from "expo-router";
+import { SplashScreen, Stack } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useEffect } from 'react';
 import { Platform, View } from 'react-native';
@@ -94,9 +93,7 @@ export default function RootLayout() {
             ),
           }}
         >
-          <Stack.Screen name="(tabs)/index" options={{ title: 'Home', animation: 'slide_from_right' }} />
-          <Stack.Screen name="(tabs)/trip" options={{ title: 'Trip', animation: 'slide_from_right' }} />
-          <Stack.Screen name="(tabs)/login" options={{ title: 'Login', animation: 'slide_from_right' }} />
+          <Stack.Screen name="(tabs)" />
         </Stack>
         <PortalHost />
     </QueryClientProvider>
